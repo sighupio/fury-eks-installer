@@ -1,2 +1,3 @@
-# fury-eks-installer
-Fury Kubernetes Installer - EKS (AWS Kubernetes Managed Service)
+# Fury EKS Installer
+
+Fury Kubernetes Installer - EKS *(AWS Kubernetes Managed Service)*

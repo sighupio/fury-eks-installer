@@ -19,11 +19,11 @@ resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {
 }
 
 data "aws_ami" "eks_worker" {
-  count = length(var.node_pool)
+  count = length(var.node_pools)
 
   filter {
     name   = "name"
-    values = ["amazon-eks-node-${element(var.node_pool, count.index).version != null ? element(var.node_pool, count.index).version : var.cluster_version}-v*"]
+    values = ["amazon-eks-node-${element(var.node_pools, count.index).version != null ? element(var.node_pools, count.index).version : var.cluster_version}-v*"]
   }
 
   most_recent = true

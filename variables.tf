@@ -32,10 +32,12 @@ variable "node_pools" {
   description = "A list of maps defining worker group configurations to be defined"
   type = list(object({
     name          = string
+    version       = string # null to use cluster_version
     min_size      = number
     max_size      = number
     instance_type = string
     volume_size   = string
+    labels        = map(string)
   }))
   default = []
 }

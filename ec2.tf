@@ -17,3 +17,16 @@ resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {
   cidr_blocks       = [var.dmz_cidr_range]
   security_group_id = aws_security_group.nodes.id
 }
+
+data "aws_ami" "eks_worker" {
+  count = length(var.node_pool)
+
+  filter {
+    name   = "name"
+    values = ["amazon-eks-node-${element(var.node_pool, count.index).version != null ? element(var.node_pool, count.index).version : var.cluster_version}-v*"]
+  }
+
+  most_recent = true
+
+  owners = ["602401143452"]
+}

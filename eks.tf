@@ -1,124 +1,58 @@
+locals {
+  parsed_node_pools = [
+    for worker in var.node_pools :
+    map(
+      "name", worker.name,
+      "ami_id", element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
+      "min_size", worker.min_size,
+      "max_size", worker.max_size,
+      "instance_type", worker.instance_type,
+      "volume_size", worker.volume_size,
+      "kubelet_extra_args", <<EOT
+--node-labels %{for k, v in worker.labels}${k}=${v},%{endfor}
+EOT
+    )
+  ]
+}
+
 module "cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "11.0.0"
 
-  attach_worker_cni_policy                     = true
-  cluster_create_security_group                = true
-  cluster_create_timeout                       = "30m"
-  cluster_delete_timeout                       = "30m"
-  cluster_enabled_log_types                    = []
-  cluster_encryption_config                    = []
-  cluster_endpoint_private_access              = true # SIGHUP only provides private clusters
-  cluster_endpoint_private_access_cidrs        = [var.dmz_cidr_range]
-  cluster_endpoint_public_access               = false # SIGHUP only provides private clusters
-  cluster_endpoint_public_access_cidrs         = []
-  cluster_iam_role_name                        = ""
-  cluster_log_kms_key_id                       = ""
-  cluster_log_retention_in_days                = 90 # Default value
-  cluster_name                                 = var.cluster_name
-  cluster_security_group_id                    = ""
-  cluster_version                              = var.cluster_version
-  config_output_path                           = ""
-  create_eks                                   = true
-  eks_oidc_root_ca_thumbprint                  = ""
-  enable_irsa                                  = false
-  iam_path                                     = "/${var.cluster_name}/"
-  kubeconfig_aws_authenticator_additional_args = []
-  kubeconfig_aws_authenticator_command         = "aws-iam-authenticator"
-  kubeconfig_aws_authenticator_command_args    = []
-  kubeconfig_aws_authenticator_env_variables   = {}
-  kubeconfig_name                              = var.cluster_name
-  manage_aws_auth                              = true
-  manage_cluster_iam_resources                 = true
-  manage_worker_iam_resources                  = true
-  map_accounts                                 = []
-  map_roles                                    = []
-  map_users                                    = []
-  node_groups                                  = {}
-  node_groups_defaults                         = {}
-  permissions_boundary                         = null
-  subnets                                      = var.subnetworks
-  tags                                         = {}
-  vpc_id                                       = var.network
-  wait_for_cluster_cmd                         = "for i in `seq 1 60`; do wget --no-check-certificate -O - -q $ENDPOINT/healthz >/dev/null && exit 0 || true; sleep 5; done; echo TIMEOUT && exit 1"
-  wait_for_cluster_interpreter                 = ["/bin/sh", "-c"]
-  worker_additional_security_group_ids         = [aws_security_group.nodes.id]
-  worker_ami_name_filter                       = ""
-  worker_ami_name_filter_windows               = ""
-  worker_ami_owner_id                          = "602401143452" # The ID of the owner of the official AWS EKS AMIs.
-  worker_ami_owner_id_windows                  = "801119661308" # The ID of the owner of the official AWS EKS Windows AMIs.
-  worker_create_initial_lifecycle_hooks        = false
-  worker_create_security_group                 = true
+  cluster_create_timeout                = "30m"
+  cluster_delete_timeout                = "30m"
+  cluster_endpoint_private_access       = true # SIGHUP only provides private clusters
+  cluster_endpoint_private_access_cidrs = [var.dmz_cidr_range]
+  cluster_endpoint_public_access        = false # SIGHUP only provides private clusters
+  cluster_log_retention_in_days         = 90    # Default value
+  cluster_name                          = var.cluster_name
+  cluster_version                       = var.cluster_version
+  create_eks                            = true
+  eks_oidc_root_ca_thumbprint           = ""
+  enable_irsa                           = false
+  iam_path                              = "/${var.cluster_name}/"
+  kubeconfig_name                       = var.cluster_name
+  subnets                               = var.subnetworks
+  vpc_id                                = var.network
+  worker_additional_security_group_ids  = [aws_security_group.nodes.id]
   worker_groups = [
-    for worker in var.node_pools :
+    for node_pool in local.parsed_node_pools :
     {
-      name                          = worker.name
-      tags                          = []
-      ami_id                        = ""
-      ami_id_windows                = ""
-      asg_desired_capacity          = worker.min_size
-      asg_max_size                  = worker.max_size
-      asg_min_size                  = worker.min_size
-      asg_force_delete              = false
-      asg_initial_lifecycle_hooks   = []
-      asg_recreate_on_change        = false
-      default_cooldown              = null
-      health_check_grace_period     = null
-      instance_type                 = worker.instance_type
-      spot_price                    = ""
-      placement_tenancy             = ""
-      root_volume_size              = worker.volume_size
-      root_volume_type              = "gp2"
-      root_iops                     = "0"
+      name                          = lookup(node_pool, "name")
+      ami_id                        = lookup(node_pool, "ami_id")
+      asg_desired_capacity          = lookup(node_pool, "min_size")
+      asg_max_size                  = lookup(node_pool, "max_size")
+      asg_min_size                  = lookup(node_pool, "min_size")
+      instance_type                 = lookup(node_pool, "instance_type")
+      root_volume_size              = lookup(node_pool, "volume_size")
       key_name                      = aws_key_pair.nodes.key_name
-      pre_userdata                  = ""
-      userdata_template_file        = ""
-      userdata_template_extra_args  = {}
-      bootstrap_extra_args          = ""
-      additional_userdata           = ""
-      ebs_optimized                 = true
-      enable_monitoring             = false
       public_ip                     = false
-      kubelet_extra_args            = ""
       subnets                       = var.subnetworks
       additional_security_group_ids = [aws_security_group.nodes.id]
-      protect_from_scale_in         = true # Prevent AWS from scaling in, so that cluster-autoscaler is solely responsible.
-      iam_instance_profile_name     = ""
-      iam_role_id                   = "local.default_iam_role_id"
-      suspended_processes           = ["AZRebalance"]
-      target_group_arns             = null
-      enabled_metrics               = []
-      placement_group               = ""
-      service_linked_role_arn       = ""
-      termination_policies          = []
-      platform                      = "linux"
-      additional_ebs_volumes        = []
-      # Settings for launch templates
-      # root_block_device_name            = data.aws_ami.eks_worker.root_device_name
-      root_kms_key_id                   = ""
-      launch_template_version           = "$Latest"
-      launch_template_placement_tenancy = "default"
-      launch_template_placement_group   = ""
-      root_encrypted                    = false
-      eni_delete                        = true
-      cpu_credits                       = "unlimited" # Avoid t2/t3 throttling
-      market_type                       = null
-      # Settings for launch templates with mixed instances policy
-      override_instance_types                  = ["m5.large", "m5a.large", "m5d.large", "m5ad.large"]
-      on_demand_allocation_strategy            = null
-      on_demand_base_capacity                  = "0"
-      on_demand_percentage_above_base_capacity = "0"
-      spot_allocation_strategy                 = "lowest-price"
-      spot_instance_pools                      = 10
-      spot_max_price                           = ""
-      max_instance_lifetime                    = 0
+      cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
+      kubelet_extra_args            = trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ",")
     }
   ]
-  worker_groups_launch_template = []
-  worker_security_group_id      = ""
-  worker_sg_ingress_from_port   = 22
-  workers_additional_policies   = []
-  workers_group_defaults        = {}
-  workers_role_name             = ""
-  write_kubeconfig              = false
+  worker_sg_ingress_from_port = 22
+  write_kubeconfig            = false
 }

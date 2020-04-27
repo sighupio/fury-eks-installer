@@ -9,7 +9,7 @@ locals {
       "instance_type", worker.instance_type,
       "volume_size", worker.volume_size,
       "kubelet_extra_args", <<EOT
---node-labels %{for k, v in worker.labels}${k}=${v},%{endfor}
+--node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
 EOT
     )
   ]

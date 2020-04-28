@@ -1,3 +1,21 @@
 # Fury EKS Installer
 
-Fury Kubernetes Installer - EKS *(AWS Kubernetes Managed Service)*
+**Installer** - *Managed Cluster Installer* - EKS
+
+![EKS](https://miro.medium.com/max/2978/1*5YAnP-tNi1Tkjzk1urIJYw.png)
+
+## What is this?
+
+This repository contains the versioned installer/[terraform module](modules/eks) to seamless install an EKS cluster
+in AWS.
+
+## Documentation
+
+The updated installer documentation is available in the [Kubernetes Fury Distribution documentation][eks installer docs]
+
+## License
+
+For license details please see [LICENSE](LICENSE)
+
+
+[eks installer docs]: http://kfd-docs-feature-eks-installer.surge.sh/docs/installers/managed/eks/

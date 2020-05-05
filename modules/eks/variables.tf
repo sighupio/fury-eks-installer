@@ -5,7 +5,7 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   type        = string
-  description = "Kubernetes Cluster Version"
+  description = "Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9"
 }
 
 variable "network" {
@@ -40,4 +40,10 @@ variable "node_pools" {
     labels        = map(string)
   }))
   default = []
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Resource group name where every resource will be placed. Required only in AKS installer (*)"
+  default     = ""
 }

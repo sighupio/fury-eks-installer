@@ -38,6 +38,7 @@ variable "node_pools" {
     instance_type = string
     volume_size   = number
     labels        = map(string)
+    taints        = list(string)
   }))
   default = []
 }

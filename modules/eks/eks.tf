@@ -10,6 +10,7 @@ locals {
       "volume_size", worker.volume_size,
       "kubelet_extra_args", <<EOT
 --node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
+%{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}
 EOT
     )
   ]
@@ -51,7 +52,7 @@ module "cluster" {
       subnets                       = var.subnetworks
       additional_security_group_ids = [aws_security_group.nodes.id]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
-      kubelet_extra_args            = trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ",")
+      kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"

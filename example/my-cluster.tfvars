@@ -18,8 +18,9 @@ node_pools = [
     volume_size : 100
     labels : {
       "node.kubernetes.io/role" : "app"
-      "sighup.io/fury-release" : "v1.1.0"
+      "sighup.io/fury-release" : "v1.3.0"
     }
+    taints : []
   },
   {
     name : "t3-node-pool"
@@ -29,5 +30,8 @@ node_pools = [
     instance_type : "t3.micro"
     volume_size : 50
     labels : {}
+    taints : [
+      "sighup.io/role=app:NoSchedule"
+    ]
   }
 ]

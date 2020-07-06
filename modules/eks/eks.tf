@@ -52,6 +52,18 @@ module "cluster" {
       additional_security_group_ids = [aws_security_group.nodes.id]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ",")
+      tags = [
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"
+          "value"               = "owned"
+          "propagate_at_launch" = true
+        },
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/enabled"
+          "value"               = "true"
+          "propagate_at_launch" = true
+        },
+      ]
     }
   ]
   worker_sg_ingress_from_port = 22

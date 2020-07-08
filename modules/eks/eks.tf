@@ -30,8 +30,7 @@ module "cluster" {
   cluster_name                          = var.cluster_name
   cluster_version                       = var.cluster_version
   create_eks                            = true
-  eks_oidc_root_ca_thumbprint           = ""
-  enable_irsa                           = false
+  enable_irsa                           = true
   iam_path                              = "/${var.cluster_name}/"
   kubeconfig_name                       = var.cluster_name
   subnets                               = var.subnetworks

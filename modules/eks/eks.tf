@@ -3,6 +3,7 @@ locals {
     for worker in var.node_pools :
     map(
       "name", worker.name,
+      "extra_tags", jsonencode(worker.extra_tags),
       "ami_id", element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
       "min_size", worker.min_size,
       "max_size", worker.max_size,
@@ -52,7 +53,7 @@ module "cluster" {
       additional_security_group_ids = [aws_security_group.nodes.id]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
-      tags = [
+      tags = concat([
         {
           "key"                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"
           "value"               = "owned"
@@ -63,7 +64,9 @@ module "cluster" {
           "value"               = "true"
           "propagate_at_launch" = true
         },
-      ]
+      ],jsondecode(lookup(node_pool,"extra_tags")))
+    }
+  ]
     }
   ]
   worker_sg_ingress_from_port = 22

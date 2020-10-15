@@ -37,6 +37,11 @@ variable "node_pools" {
     max_size      = number
     instance_type = string
     volume_size   = number
+    extra_tags    = list(object({
+        key = string
+        value = string
+        propagate_at_launch = bool
+    }))
     labels        = map(string)
     taints        = list(string)
   }))

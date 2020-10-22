@@ -1,19 +1,25 @@
 locals {
+
+  default_node_tags = {
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" : "owned",
+    "k8s.io/cluster-autoscaler/enabled" : "true"
+  }
+
   parsed_node_pools = [
     for worker in var.node_pools :
-    map(
-      "name", worker.name,
-      "extra_tags", jsonencode(worker.extra_tags),
-      "ami_id", element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
-      "min_size", worker.min_size,
-      "max_size", worker.max_size,
-      "instance_type", worker.instance_type,
-      "volume_size", worker.volume_size,
-      "kubelet_extra_args", <<EOT
+    {
+      "name" : worker.name,
+      "ami_id" : element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
+      "min_size" : worker.min_size,
+      "max_size" : worker.max_size,
+      "instance_type" : worker.instance_type,
+      "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
+      "volume_size" : worker.volume_size,
+      "kubelet_extra_args" : <<EOT
 --node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
 %{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}
 EOT
-    )
+    }
   ]
 }
 
@@ -54,20 +60,7 @@ module "cluster" {
       additional_security_group_ids = [aws_security_group.nodes.id]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
-      tags = concat([
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"
-          "value"               = "owned"
-          "propagate_at_launch" = true
-        },
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/enabled"
-          "value"               = "true"
-          "propagate_at_launch" = true
-        },
-      ],jsondecode(lookup(node_pool,"extra_tags")))
-    }
-  ]
+      tags                          = lookup(node_pool, "tags")
     }
   ]
   worker_sg_ingress_from_port = 22

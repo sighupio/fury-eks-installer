@@ -1,12 +1,14 @@
 resource "aws_key_pair" "nodes" {
   key_name_prefix = "${var.cluster_name}-"
   public_key      = var.ssh_public_key
+  tags            = var.tags
 }
 
 resource "aws_security_group" "nodes" {
   name_prefix = "${var.cluster_name}-"
   description = "Additional security group for nodes in ${var.cluster_name} EKS cluster"
   vpc_id      = var.network
+  tags        = var.tags
 }
 
 resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {

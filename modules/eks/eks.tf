@@ -18,24 +18,25 @@ EOT
 
 module "cluster" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "11.0.0"
+  version = "13.0.0"
 
-  cluster_create_timeout                = "30m"
-  cluster_delete_timeout                = "30m"
-  cluster_endpoint_private_access       = true # SIGHUP only provides private clusters
-  cluster_endpoint_private_access_cidrs = [var.dmz_cidr_range]
-  cluster_endpoint_public_access        = false # SIGHUP only provides private clusters
-  cluster_log_retention_in_days         = 90    # Default value
-  cluster_enabled_log_types             = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-  cluster_name                          = var.cluster_name
-  cluster_version                       = var.cluster_version
-  create_eks                            = true
-  enable_irsa                           = true
-  iam_path                              = "/${var.cluster_name}/"
-  kubeconfig_name                       = var.cluster_name
-  subnets                               = var.subnetworks
-  vpc_id                                = var.network
-  worker_additional_security_group_ids  = [aws_security_group.nodes.id]
+  cluster_create_timeout                         = "30m"
+  cluster_delete_timeout                         = "30m"
+  cluster_endpoint_private_access                = true # SIGHUP only provides private clusters
+  cluster_create_endpoint_private_access_sg_rule = true
+  cluster_endpoint_private_access_cidrs          = [var.dmz_cidr_range]
+  cluster_endpoint_public_access                 = false # SIGHUP only provides private clusters
+  cluster_log_retention_in_days                  = 90    # Default value
+  cluster_enabled_log_types                      = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  cluster_name                                   = var.cluster_name
+  cluster_version                                = var.cluster_version
+  create_eks                                     = true
+  enable_irsa                                    = true
+  iam_path                                       = "/${var.cluster_name}/"
+  kubeconfig_name                                = var.cluster_name
+  subnets                                        = var.subnetworks
+  vpc_id                                         = var.network
+  worker_additional_security_group_ids           = [aws_security_group.nodes.id]
   worker_groups = [
     for node_pool in local.parsed_node_pools :
     {

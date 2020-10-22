@@ -42,6 +42,7 @@ module "cluster" {
   iam_path                                       = "/${var.cluster_name}/"
   kubeconfig_name                                = var.cluster_name
   subnets                                        = var.subnetworks
+  tags                                           = var.tags
   vpc_id                                         = var.network
   worker_additional_security_group_ids           = [aws_security_group.nodes.id]
   worker_groups = [

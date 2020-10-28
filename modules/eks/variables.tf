@@ -36,6 +36,7 @@ variable "node_pools" {
     min_size      = number
     max_size      = number
     instance_type = string
+    max_pods      = number # null to use default upstream configuration
     volume_size   = number
     labels        = map(string)
     taints        = list(string)

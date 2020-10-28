@@ -21,6 +21,8 @@ node_pools = [
       "sighup.io/fury-release" : "v1.3.0"
     }
     taints : []
+    tags : {}
+    max_pods : null # To use default EKS setting
   },
   {
     name : "t3-node-pool"
@@ -33,5 +35,7 @@ node_pools = [
     taints : [
       "sighup.io/role=app:NoSchedule"
     ]
+    tags : {}
+    max_pods : 123 # To use specific value
   }
 ]

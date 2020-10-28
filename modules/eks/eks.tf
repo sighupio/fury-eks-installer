@@ -15,8 +15,9 @@ locals {
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
+      "bootstrap_extra_args": "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
       "kubelet_extra_args" : <<EOT
---node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
+%{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
 %{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}
 EOT
     }
@@ -62,6 +63,7 @@ module "cluster" {
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
       tags                          = lookup(node_pool, "tags")
+      bootstrap_extra_args          = lookup(node_pool, "bootstrap_extra_args")
     }
   ]
   worker_sg_ingress_from_port = 22

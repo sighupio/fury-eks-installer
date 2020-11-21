@@ -18,4 +18,4 @@ The updated installer documentation is available in the [Kubernetes Fury Distrib
 For license details please see [LICENSE](LICENSE)
 
 
-[eks installer docs]: http://kfd-docs-feature-eks-installer.surge.sh/docs/installers/managed/eks/
+[eks installer docs]: https://docs.kubernetesfury.com/docs/installers/managed/eks/

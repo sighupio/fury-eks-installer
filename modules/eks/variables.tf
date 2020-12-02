@@ -56,3 +56,9 @@ variable "resource_group_name" {
   description = "Resource group name where every resource will be placed. Required only in AKS installer (*)"
   default     = ""
 }
+
+variable "eks_manage_aws_auth" {
+  type        = bool
+  description = "Whether to apply the aws-auth configmap file."
+  default     = true
+}

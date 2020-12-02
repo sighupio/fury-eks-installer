@@ -15,7 +15,7 @@ locals {
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
-      "bootstrap_extra_args": "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
+      "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
       "kubelet_extra_args" : <<EOT
 %{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}
 %{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}
@@ -41,6 +41,7 @@ module "cluster" {
   create_eks                                     = true
   enable_irsa                                    = true
   iam_path                                       = "/${var.cluster_name}/"
+  manage_aws_auth                                = var.eks_manage_aws_auth
   kubeconfig_name                                = var.cluster_name
   subnets                                        = var.subnetworks
   tags                                           = var.tags

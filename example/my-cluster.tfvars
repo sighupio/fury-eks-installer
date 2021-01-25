@@ -16,7 +16,7 @@ node_pools = [
     max_size : 2
     instance_type : "m5.large"
     volume_size : 100
-    subnets: null
+    subnetworks : null
     labels : {
       "node.kubernetes.io/role" : "app"
       "sighup.io/fury-release" : "v1.3.0"
@@ -32,7 +32,7 @@ node_pools = [
     max_size : 1
     instance_type : "t3.micro"
     volume_size : 50
-    subnets: null
+    subnetworks : null
     labels : {}
     taints : [
       "sighup.io/role=app:NoSchedule"

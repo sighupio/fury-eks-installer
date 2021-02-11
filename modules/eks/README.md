@@ -31,3 +31,4 @@
 | cluster_certificate_authority | The base64 encoded certificate data required to communicate with your cluster. Add this to the certificate-authority-data section of the kubeconfig file for your cluster |
 | cluster_endpoint              | The endpoint for your Kubernetes API server                                                                                                                               |
 | operator_ssh_user             | SSH user to access cluster nodes with ssh_public_key                                                                                                                      |
+| eks_cluster_oidc_issuer_url   | The URL on the EKS cluster OIDC Issuer                                                                                                                                    |

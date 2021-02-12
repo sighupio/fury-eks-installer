@@ -32,3 +32,4 @@
 | cluster_endpoint              | The endpoint for your Kubernetes API server                                                                                                                               |
 | operator_ssh_user             | SSH user to access cluster nodes with ssh_public_key                                                                                                                      |
 | eks_cluster_oidc_issuer_url   | The URL on the EKS cluster OIDC Issuer                                                                                                                                    |
+| eks_worker_iam_role_name      | Default IAM role name for EKS worker groups                                                                                                                               |

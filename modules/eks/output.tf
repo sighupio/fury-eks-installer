@@ -17,3 +17,8 @@ output "eks_cluster_oidc_issuer_url" {
   description = "The URL on the EKS cluster OIDC Issuer"
   value       = module.cluster.cluster_oidc_issuer_url
 }
+
+output "eks_worker_iam_role_name" {
+  description = "Default IAM role name for EKS worker groups"
+  value       = module.cluster.worker_iam_role_name
+}

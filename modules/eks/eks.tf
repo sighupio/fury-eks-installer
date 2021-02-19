@@ -10,6 +10,7 @@ locals {
     {
       "name" : worker.name,
       "ami_id" : element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
+      "security_group_id" : element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, worker.name)),
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
       "instance_type" : worker.instance_type,
@@ -65,7 +66,7 @@ module "cluster" {
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false
       subnets                       = lookup(node_pool, "subnetworks")
-      additional_security_group_ids = [aws_security_group.nodes.id]
+      additional_security_group_ids = [aws_security_group.nodes.id, lookup(node_pool, "security_group_id")]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
       tags                          = lookup(node_pool, "tags")

@@ -8,6 +8,9 @@ subnetworks = [
 ]
 ssh_public_key = "ssh-rsa example"
 dmz_cidr_range = "10.0.4.0/24"
+tags = {
+  "cluster-tags" : "also-exists"
+}
 node_pools = [
   {
     name : "m5-node-pool"
@@ -17,12 +20,37 @@ node_pools = [
     instance_type : "m5.large"
     volume_size : 100
     subnetworks : null
+    additional_firewall_rules : [
+      {
+        name : "Debug 1"
+        direction : "ingress"
+        source_cidr : "0.0.0.0/0"
+        protocol : "TCP"
+        ports : "80-80"
+        tags : {
+          "hello" : "tag",
+          "cluster-tags" : "also-exists-OVERRIDE"
+        }
+      },
+      {
+        name : "Debug 2"
+        direction : "egress"
+        source_cidr : "0.0.0.0/0"
+        protocol : "TCP"
+        ports : "80-111"
+        tags : {
+          "ciao" : "a tutti"
+        }
+      }
+    ]
     labels : {
       "node.kubernetes.io/role" : "app"
       "sighup.io/fury-release" : "v1.3.0"
     }
     taints : []
-    tags : {}
+    tags : {
+      "node-tags" : "exists"
+    }
     max_pods : null # To use default EKS setting
   },
   {
@@ -33,6 +61,7 @@ node_pools = [
     instance_type : "t3.micro"
     volume_size : 50
     subnetworks : null
+    additional_firewall_rules : []
     labels : {}
     taints : [
       "sighup.io/role=app:NoSchedule"

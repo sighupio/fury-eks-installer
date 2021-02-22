@@ -24,7 +24,7 @@ node_pools = [
       {
         name : "Debug 1"
         direction : "ingress"
-        source_cidr : "0.0.0.0/0"
+        cidr_block : "0.0.0.0/0"
         protocol : "TCP"
         ports : "80-80"
         tags : {
@@ -35,7 +35,7 @@ node_pools = [
       {
         name : "Debug 2"
         direction : "egress"
-        source_cidr : "0.0.0.0/0"
+        cidr_block : "0.0.0.0/0"
         protocol : "TCP"
         ports : "80-111"
         tags : {

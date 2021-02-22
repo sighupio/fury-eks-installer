@@ -31,7 +31,7 @@ locals {
         from_port         = split("-", rule.ports)[0]
         to_port           = split("-", rule.ports)[1]
         protocol          = rule.protocol
-        cidr_blocks       = [rule.source_cidr]
+        cidr_blocks       = [rule.cidr_block]
       }]
       ]
     ]

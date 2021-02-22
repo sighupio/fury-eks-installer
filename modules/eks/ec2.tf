@@ -11,30 +11,6 @@ resource "aws_security_group" "node_pool" {
   name        = "${var.cluster_name}-nodepool-${var.node_pools[count.index].name}"
   description = "Additional security group for the node pool ${var.node_pools[count.index].name} in the ${var.cluster_name} cluster"
 
-  # Be careful with: https://github.com/hashicorp/terraform/issues/22605
-  dynamic "ingress" {
-    for_each = [for rule in var.node_pools[count.index].additional_firewall_rules : rule if rule.direction == "ingress"]
-    content {
-      description = ingress.value.name
-      from_port   = split("-", ingress.value.ports)[0]
-      to_port     = split("-", ingress.value.ports)[1]
-      protocol    = ingress.value.protocol
-      cidr_blocks = [ingress.value.source_cidr]
-    }
-  }
-
-  # Be careful with: https://github.com/hashicorp/terraform/issues/22605
-  dynamic "egress" {
-    for_each = [for rule in var.node_pools[count.index].additional_firewall_rules : rule if rule.direction == "egress"]
-    content {
-      description = egress.value.name
-      from_port   = split("-", egress.value.ports)[0]
-      to_port     = split("-", egress.value.ports)[1]
-      protocol    = egress.value.protocol
-      cidr_blocks = [egress.value.source_cidr]
-    }
-  }
-
   tags = merge(
     # Map of tags in the cluster
     var.tags,
@@ -44,6 +20,33 @@ resource "aws_security_group" "node_pool" {
     # https://stackoverflow.com/questions/57392101/merge-maps-inside-list-in-terraform
     zipmap(flatten([for item in var.node_pools[count.index].additional_firewall_rules.*.tags : keys(item)]), flatten([for item in var.node_pools[count.index].additional_firewall_rules.*.tags : values(item)]))
   )
+}
+
+locals {
+  sg_rules = flatten([
+    [for nodePool in var.node_pools : [
+      [for rule in nodePool.additional_firewall_rules : {
+        security_group_id = element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, nodePool.name)),
+        type              = rule.direction
+        from_port         = split("-", rule.ports)[0]
+        to_port           = split("-", rule.ports)[1]
+        protocol          = rule.protocol
+        cidr_blocks       = [rule.source_cidr]
+      }]
+      ]
+    ]
+  ])
+}
+
+resource "aws_security_group_rule" "node_pool" {
+  count = length(local.sg_rules)
+
+  type              = local.sg_rules[count.index]["type"]
+  from_port         = local.sg_rules[count.index]["from_port"]
+  to_port           = local.sg_rules[count.index]["to_port"]
+  protocol          = local.sg_rules[count.index]["protocol"]
+  cidr_blocks       = local.sg_rules[count.index]["cidr_blocks"]
+  security_group_id = local.sg_rules[count.index]["security_group_id"]
 }
 
 resource "aws_security_group" "nodes" {

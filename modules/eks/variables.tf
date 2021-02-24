@@ -19,8 +19,11 @@ variable "subnetworks" {
 }
 
 variable "dmz_cidr_range" {
-  type        = string
   description = "Network CIDR range from where cluster control plane will be accessible"
+}
+
+locals {
+  parsed_dmz_cidr_range = flatten([var.dmz_cidr_range])
 }
 
 variable "ssh_public_key" {

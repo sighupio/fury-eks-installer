@@ -61,7 +61,7 @@ resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = [var.dmz_cidr_range]
+  cidr_blocks       = local.parsed_dmz_cidr_range
   security_group_id = aws_security_group.nodes.id
 }
 

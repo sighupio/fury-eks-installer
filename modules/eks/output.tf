@@ -22,3 +22,8 @@ output "eks_worker_iam_role_name" {
   description = "Default IAM role name for EKS worker groups"
   value       = module.cluster.worker_iam_role_name
 }
+
+output "eks_workers_asg_names" {
+  description = "Names of the autoscaling groups containing workers."
+  value       = module.cluster.workers_asg_names
+}

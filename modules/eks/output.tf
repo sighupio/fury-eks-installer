@@ -27,3 +27,7 @@ output "eks_workers_asg_names" {
   description = "Names of the autoscaling groups containing workers."
   value       = module.cluster.workers_asg_names
 }
+
+output "nodes_security_group_id" {
+  value = module.cluster.worker_security_group_id
+}

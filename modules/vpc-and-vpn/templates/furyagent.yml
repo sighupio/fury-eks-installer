@@ -1,0 +1,20 @@
+storage:
+  provider: s3
+  bucketName: ${bucketName}
+  aws_access_key: ${aws_access_key}
+  aws_secret_key: ${aws_secret_key}
+  region: ${region}
+clusterComponent:
+  openvpn:
+    certDir: /etc/openvpn/pki
+    servers: %{ if length(servers) == 0 ~} []%{ else }
+%{ for server in servers ~}
+      - ${server}
+%{ endfor ~}
+%{ endif }
+  sshkeys:
+    user: ${user}
+    tempDir: /var/lib/SIGHUP/tmp
+    localDirConfigs: "."
+    adapter:
+      name: github

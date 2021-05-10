@@ -28,6 +28,7 @@ output "eks_workers_asg_names" {
   value       = module.cluster.workers_asg_names
 }
 
-output "nodes_security_group_id" {
-  value = module.cluster.worker_security_group_id
+output "eks_worker_security_group_id" {
+  description = "Security group ID attached to the EKS workers."
+  value       = module.cluster.worker_security_group_id
 }

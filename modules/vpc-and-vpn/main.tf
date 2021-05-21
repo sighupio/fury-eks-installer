@@ -1,3 +1,7 @@
+terraform {
+  required_version = "0.15.4"
+}
+
 data "aws_region" "current" {}
 
 data "aws_availability_zones" "available" {}

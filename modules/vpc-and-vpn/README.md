@@ -2,12 +2,12 @@
 
 ## Providers
 
-| Name     | Version   |
-| -------- | --------- |
-| aws      | ~> 3.19.0 |
-| external | ~> 2.0    |
-| local    | ~> 2.0    |
-| null     | ~> 3.0    |
+| Name     | Version |
+| -------- | ------- |
+| aws      | 3.19.0  |
+| external | 2.0     |
+| local    | 2.0     |
+| null     | 3.0     |
 
 ## Inputs
 

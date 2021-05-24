@@ -2,10 +2,10 @@
 
 ## Providers
 
-| Name       | Version   |
-| ---------- | --------- |
-| aws        | >= 2.70.0 |
-| kubernetes | = 1.13.3  |
+| Name       | Version |
+| ---------- | ------- |
+| aws        | 2.70.0  |
+| kubernetes | 1.13.3  |
 
 ## Inputs
 

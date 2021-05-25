@@ -3,7 +3,7 @@ terraform {
   required_providers {
     local    = "2.0.0"
     null     = "3.0.0"
-    aws      = "3.19.0"
+    aws      = "3.37.0"
     external = "2.0.0"
   }
 }

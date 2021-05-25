@@ -14,7 +14,7 @@ variable "network" {
 }
 
 variable "subnetworks" {
-  type        = list
+  type        = list(any)
   description = "List of subnets where the cluster will be hosted"
 }
 
@@ -58,7 +58,7 @@ variable "node_pools" {
 }
 
 variable "tags" {
-  type        = map
+  type        = map(any)
   description = "The tags to apply to all resources"
   default     = {}
 }

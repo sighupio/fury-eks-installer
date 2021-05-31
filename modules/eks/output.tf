@@ -32,3 +32,8 @@ output "eks_worker_security_group_id" {
   description = "Security group ID attached to the EKS workers."
   value       = module.cluster.worker_security_group_id
 }
+
+
+output "parsed_node_pool" {
+  value = local.parsed_node_pools
+}

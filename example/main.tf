@@ -19,8 +19,8 @@ module "my-cluster" {
   ssh_public_key   = var.ssh_public_key
   dmz_cidr_range   = var.dmz_cidr_range
   node_pools       = var.node_pools
-  eks_map_users    = null
-  eks_map_roles    = null
+  eks_map_users    = []
+  eks_map_roles    = []
   eks_map_accounts = []
   tags             = var.tags
 }
@@ -54,4 +54,9 @@ users:
         - "--cluster-name"
         - "${var.cluster_name}"
 EOT
+}
+
+
+output "node_pools" {
+  value = module.my-cluster.parsed_node_pool
 }

@@ -56,7 +56,3 @@ users:
 EOT
 }
 
-
-output "node_pools" {
-  value = module.my-cluster.parsed_node_pool
-}

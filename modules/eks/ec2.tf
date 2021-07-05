@@ -65,6 +65,8 @@ resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {
   security_group_id = aws_security_group.nodes.id
 }
 
+data "aws_region" "current" {}
+
 locals {
   default_ami_owner = "602401143452"
   ami_owner = {

@@ -65,6 +65,15 @@ resource "aws_security_group_rule" "ssh_from_dmz_to_nodes" {
   security_group_id = aws_security_group.nodes.id
 }
 
+data "aws_region" "current" {}
+
+locals {
+  default_ami_owner = "602401143452"
+  ami_owner = {
+    "eu-south-1" : "590381155156" # Specific for Milan
+  }
+}
+
 data "aws_ami" "eks_worker" {
   count = length(var.node_pools)
 
@@ -75,5 +84,5 @@ data "aws_ami" "eks_worker" {
 
   most_recent = true
 
-  owners = ["602401143452"]
+  owners = [lookup(local.ami_owner, data.aws_region.current.name, local.default_ami_owner)]
 }

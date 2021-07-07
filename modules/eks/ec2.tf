@@ -86,3 +86,15 @@ data "aws_ami" "eks_worker" {
 
   owners = [lookup(local.ami_owner, data.aws_region.current.name, local.default_ami_owner)]
 }
+data "aws_availability_zones" "available" {}
+
+data "aws_ec2_spot_price" "current" {
+  count = length(var.node_pools)
+  availability_zone = data.aws_availability_zones.available.names[0]
+  instance_type = element(var.node_pools, count.index).instance_type
+
+  filter {
+    name   = "product-description"
+    values = ["Linux/UNIX"]
+  }
+}

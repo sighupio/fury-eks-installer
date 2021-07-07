@@ -18,6 +18,7 @@ node_pools = [
     min_size : 1
     max_size : 2
     instance_type : "m5.large"
+    spot_instance: true
     volume_size : 100
     subnetworks : null
     additional_firewall_rules : [
@@ -59,6 +60,7 @@ node_pools = [
     min_size : 1
     max_size : 1
     instance_type : "t3.micro"
+    spot_instance: false
     volume_size : 50
     subnetworks : null
     additional_firewall_rules : []

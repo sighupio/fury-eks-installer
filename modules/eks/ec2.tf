@@ -77,3 +77,15 @@ data "aws_ami" "eks_worker" {
 
   owners = ["602401143452"]
 }
+data "aws_availability_zones" "available" {}
+
+data "aws_ec2_spot_price" "current" {
+  count = length(var.node_pools)
+  availability_zone = data.aws_availability_zones.available.names[0]
+  instance_type = element(var.node_pools, count.index).instance_type
+
+  filter {
+    name   = "product-description"
+    values = ["Linux/UNIX"]
+  }
+}

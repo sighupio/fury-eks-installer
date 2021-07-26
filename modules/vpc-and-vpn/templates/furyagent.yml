@@ -17,4 +17,4 @@ clusterComponent:
     tempDir: /var/lib/SIGHUP/tmp
     localDirConfigs: "."
     adapter:
-      name: github
+      name: ${adapter}

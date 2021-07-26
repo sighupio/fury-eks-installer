@@ -71,7 +71,12 @@ variable "vpn_operator_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "vpn_ssh_keys" {
+  description = "List of SSH keys to be added to authorized keys in nodes. If this is provided, vpn_ssh_users will be ignored"
+  type        = list(string)
+}
+
 variable "vpn_ssh_users" {
-  description = "GitHub users id to sync public rsa keys. Example angelbarrera92"
+  description = "GitHub users id to sync public rsa keys. Example angelbarrera92. Not to be used along with vpn_ssh_keys"
   type        = list(string)
 }

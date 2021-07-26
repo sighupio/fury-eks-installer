@@ -17,6 +17,14 @@ locals {
     furyagent              = indent(6, local_file.furyagent.content),
   }
 
+  users     = var.vpn_ssh_users
+  ssh_keys  = var.vpn_ssh_keys
+  sshkeys_vars =  {
+    users = local.users
+    ssh_keys = local.ssh_keys
+  }
+  sshkeys = templatefile("${path.module}/templates/ssh-users.yml", local.sshkeys_vars)
+
   furyagent_vars = {
     bucketName     = aws_s3_bucket.furyagent.bucket,
     aws_access_key = aws_iam_access_key.furyagent.id,
@@ -24,13 +32,9 @@ locals {
     region         = data.aws_region.current.name,
     servers        = [for serverIP in aws_eip.vpn.*.public_ip : "${serverIP}:${var.vpn_port}"]
     user           = var.vpn_operator_name,
+    adapter        = length(local.ssh_keys) == 0 ? "github" : "static"
   }
   furyagent = templatefile("${path.module}/templates/furyagent.yml", local.furyagent_vars)
-  users     = var.vpn_ssh_users
-  sshkeys_vars = {
-    users = local.users
-  }
-  sshkeys = templatefile("${path.module}/templates/ssh-users.yml", local.sshkeys_vars)
 }
 
 //INSTANCE RELATED STUFF

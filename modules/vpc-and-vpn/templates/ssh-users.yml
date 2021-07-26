@@ -1,5 +1,12 @@
 users:
-%{ for user in users ~}
-  - name: ${user}
-    user_id: ${user}
-%{ endfor ~}
+%{ if length(ssh_keys) = 0 }
+  %{ for ssh_key in ssh_keys ~}
+    - name: ${element(split(ssh_key, " "), -1)}
+      ssh_key: ${ssh_key}
+  %{ endfor ~}
+%{ else }
+  %{ for user in users ~}
+    - name: ${user}
+      user_id: ${user}
+  %{ endfor ~}
+%{ endif}

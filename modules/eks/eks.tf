@@ -14,6 +14,7 @@ locals {
       "security_group_id" : element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, worker.name)),
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
+      // we make the double of the current given spot_price to avoid any price volatily. 
       "spot_instance_price": worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price , index(var.node_pools.*.name, worker.name)) * 2 : "",
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
@@ -70,7 +71,6 @@ module "cluster" {
       root_volume_size              = lookup(node_pool, "volume_size")
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false
-      // adding 20% more of get price in order to avoid price volatily
       spot_price                    = lookup(node_pool, "spot_instance_price" )
       subnets                       = lookup(node_pool, "subnetworks")
       additional_security_group_ids = [aws_security_group.nodes.id, lookup(node_pool, "security_group_id")]

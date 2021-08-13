@@ -20,7 +20,7 @@ locals {
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
       "subnetworks" : worker.subnetworks != null ? worker.subnetworks : var.subnetworks
-      "target_group_arns" : worker.target_group_arns
+      "target_group_arns" : worker.eks_target_group_arns
       "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
       "kubelet_extra_args" : <<EOT
 %{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels=sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}${worker.spot_instance ? "node.kubernetes.io/lifecycle=spot" : ""}
@@ -70,7 +70,7 @@ module "cluster" {
       asg_min_size                  = lookup(node_pool, "min_size")
       instance_type                 = lookup(node_pool, "instance_type")
       root_volume_size              = lookup(node_pool, "volume_size")
-      target_group_arns             = lookup(node_pool, "target_group_arns")
+      target_group_arns             = lookup(node_pool, "eks_target_group_arns")
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false
       spot_price                    = lookup(node_pool, "spot_instance_price")

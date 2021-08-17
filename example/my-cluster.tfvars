@@ -21,6 +21,7 @@ node_pools = [
     spot_instance: true
     volume_size : 100
     subnetworks : null
+    eks_target_group_arns : null
     additional_firewall_rules : [
       {
         name : "Debug 1"
@@ -63,6 +64,7 @@ node_pools = [
     spot_instance: false
     volume_size : 50
     subnetworks : null
+    eks_target_group_arns : null
     additional_firewall_rules : []
     labels : {}
     taints : [

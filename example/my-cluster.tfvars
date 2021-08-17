@@ -19,7 +19,7 @@ node_pools = [
     max_size : 2
     instance_type : "m5.large"
     spot_instance: true
-    ami_id: null
+    eks_ami_id: null
     volume_size : 100
     subnetworks : null
     eks_target_group_arns : null
@@ -63,7 +63,7 @@ node_pools = [
     max_size : 1
     instance_type : "t3.micro"
     spot_instance: false
-    ami_id: null
+    eks_ami_id: null
     volume_size : 50
     subnetworks : null
     eks_target_group_arns : null

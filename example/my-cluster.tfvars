@@ -20,6 +20,7 @@ node_pools = [
     instance_type : "m5.large"
     volume_size : 100
     subnetworks : null
+    eks_target_group_arns : null
     additional_firewall_rules : [
       {
         name : "Debug 1"
@@ -61,6 +62,7 @@ node_pools = [
     instance_type : "t3.micro"
     volume_size : 50
     subnetworks : null
+    eks_target_group_arns : null
     additional_firewall_rules : []
     labels : {}
     taints : [

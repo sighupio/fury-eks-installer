@@ -52,7 +52,7 @@ node_pools = [
     tags : {
       "node-tags" : "exists"
     }
-    max_pods : null # To use default EKS setting
+    # max_pods : null # To use default EKS setting set it to null or do not set it
   },
   {
     name : "t3-node-pool"

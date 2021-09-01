@@ -1,3 +1,7 @@
+terraform {
+  required_version = "0.15.4"
+}
+
 variable "cluster_name" {}
 variable "cluster_version" {}
 variable "network" {}

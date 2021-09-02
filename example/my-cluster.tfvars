@@ -18,7 +18,6 @@ node_pools = [
     min_size : 1
     max_size : 2
     instance_type : "m5.large"
-    os: null
     volume_size : 100
     subnetworks : null
     eks_target_group_arns : null
@@ -61,7 +60,6 @@ node_pools = [
     min_size : 1
     max_size : 1
     instance_type : "t3.micro"
-    os: null
     volume_size : 50
     subnetworks : null
     eks_target_group_arns : null

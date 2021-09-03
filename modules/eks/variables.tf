@@ -46,7 +46,7 @@ variable "node_pools" {
     labels                = map(string)
     taints                = list(string)
     tags                  = map(string)
-    eks_target_group_arns = list(string)
+    eks_target_group_arns = optional(list(string))
     additional_firewall_rules = list(object({
       name       = string
       direction  = string

@@ -28,21 +28,37 @@ The [EKS module][eks-module] deploys a **private control plane** cluster, where 
 
 The [VPC and VPN module][vpc-vpn-module] setups all the necessary networking infrastructure and a bastion host.
 
-The bastion host includes a OpenVPN instance easily manageable by using [furyagent][furyagent].
+The bastion host includes a OpenVPN instance easily manageable by using [furyagent][furyagent] to provide access to the cluster.
 
 > 🕵🏻‍♂️ [Furyagent][furyagent] is a tool developed by SIGHUP to manage OpenVPN and SSH user access to the bastion host.
 
-To interact with the private cluster there are two options available:
+## Requirements
 
-- `ssh` in to the bastion host
-- connect to the OpenVPN server (recommended)
+- **AWS Access Credentials** of an AWS Account with the following [IAM permissions](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/iam-permissions.md).
+- **terraform** `0.15.4`
+- `ssh` or **OpenVPN Client** - [Tunnelblick][tunnelblick] (on macOS) or [OpenVPN Connect][openvpn-connect] (for other OS) are recommended.
 
-### Useful links
+## Create EKS Cluster
 
+To create the cluster via the installers:
+
+1. Use the [VPC and VPN module][vpc-vpn-module] to deploy the networking infrastructure
+
+2. Configure access to the OpenVPN instance of the bastion host via [furyagent][furyagent]
+
+3. Connect to the OpenVPN instance
+
+4. Use the [EKS module][eks-module] to deploy the EKS cluster
+
+Please refer to each module documentation and the [example](example/) folder for more details.
+
+## Useful links
+
+- [EKS pricing](https://aws.amazon.com/eks/pricing/)
+- [Reserved EC2 Instances](https://aws.amazon.com/ec2/pricing/reserved-instances/)
 - [Managing users or IAM roles for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)
 - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
 - [Tagging your Amazon EKS resources](https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html)
-- [Amazon EKS Kubernetes versions]
 
 ## License
 
@@ -51,5 +67,7 @@ For license details please see [LICENSE](LICENSE)
 [eks installer docs]: https://docs.kubernetesfury.com/docs/installers/managed/eks/
 [vpc-vpn-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/vpc-and-vpn
 [eks-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/eks
-[Amazon EKS Kubernetes versions]: https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
+
 [furyagent]: https://github.com/sighupio/furyagent
+[tunnelblick]: https://tunnelblick.net/downloads.html
+[openvpn-connect]: https://openvpn.net/vpn-client/

@@ -64,7 +64,7 @@ module "my-cluster" {
     "subnet-id2",
     "subnet-id3",
   ]
-  
+
   ssh_public_key = "ssh-rsa example"
   dmz_cidr_range = "10.0.4.0/24"
   
@@ -111,8 +111,6 @@ module "my-cluster" {
   eks_map_users    = []
   eks_map_roles    = []
   eks_map_accounts = []
-
-  
 }
 
 ```  

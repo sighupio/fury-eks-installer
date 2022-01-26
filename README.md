@@ -1,28 +1,23 @@
-<h1 align="center">
-  <img src="docs/assets/fury_installer.png" width="200px"/><br/>
-  Fury EKS Installer
+<h1>
+    <img src="./docs/assets/fury_installer.png?raw=true" align="left" width="90" style="margin-right: 15px"/>
+    Fury EKS Installer
 </h1>
 
-<p align="center">Deploy a production-grade EKS cluster on AWS ⚔️</p>
+![Release](https://img.shields.io/github/v/release/sighupio/fury-eks-installer?label=Latest%20Release)
+![License](https://img.shields.io/github/license/sighupio/fury-eks-installer?label=License)
+[![Slack](https://img.shields.io/badge/slack-@kubernetes/fury-yellow.svg?logo=slack&label=Slack)](https://kubernetes.slack.com/archives/C0154HYTAQH)
 
-![Release](https://img.shields.io/github/v/release/sighupio/fury-eks-installer?label=Release)
-[![Slack](https://img.shields.io/badge/slack-@kubernetes/fury-yellow.svg?logo=slack)](https://kubernetes.slack.com/archives/C0154HYTAQH)
-![License](https://img.shields.io/github/license/sighupio/fury-eks-installer)
+<!-- <KFD-DOCS> -->
 
-## Installer
+**Fury EKS Installer** deploys a production-grade Kubernetes Fury cluster on Amazon Elastic Kubernetes Services (EKS).
+
+If you are new to Kubernetes Fury please refer to the [official documentation][kfd-docs] on how to get started.
+
+## Overview
 
 The EKS installers deploys and configures a production-ready EKS cluster without having to learn all internals of the service.
 
-The installer is composed of two different terraform modules:
-
-|            Module             |                  Description                   |
-| ----------------------------- | ---------------------------------------------- |
-| [VPC and VPN][vpc-vpn-module] | Deploy the necessary networking infrastructure |
-| [EKS][eks-module]             | Deploy the EKS cluster                         |
-
-## Architecture
-
-![Fury Cluster Architecture](docs/assets/fury_installer_architecture.png)
+<img src="./docs/assets/fury_installer_architecture.png?raw=true" width="600" style="margin: 0 auto"/>
 
 The [EKS module][eks-module] deploys a **private control plane** cluster, where the control plane endpoint is not publicly accessible.
 
@@ -32,13 +27,26 @@ The bastion host includes a OpenVPN instance easily manageable by using [furyage
 
 > 🕵🏻‍♂️ [Furyagent][furyagent] is a tool developed by SIGHUP to manage OpenVPN and SSH user access to the bastion host.
 
-## Requirements
+## Modules
+
+The installer is composed of two different terraform modules:
+
+|            Module             |                  Description                   |
+| ----------------------------- | ---------------------------------------------- |
+| [VPC and VPN][vpc-vpn-module] | Deploy the necessary networking infrastructure |
+| [EKS][eks-module]             | Deploy the EKS cluster                         |
+
+Click on each module to see its full documentation.
+
+## Usage
+
+### Requirements
 
 - **AWS Access Credentials** of an AWS Account with the following [IAM permissions](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/iam-permissions.md).
 - **terraform** `0.15.4`
 - `ssh` or **OpenVPN Client** - [Tunnelblick][tunnelblick] (on macOS) or [OpenVPN Connect][openvpn-connect] (for other OS) are recommended.
 
-## Create EKS Cluster
+### Create EKS Cluster
 
 To create the cluster via the installers:
 
@@ -59,6 +67,23 @@ Please refer to each module documentation and the [example](example/) folder for
 - [Managing users or IAM roles for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)
 - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
 - [Tagging your Amazon EKS resources](https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html)
+
+<!-- <FOOTER> -->
+
+## Contributing
+
+Before contributing, please read first the [Contributing Guidelines](docs/CONTRIBUTING.md).
+
+### Reporting Issues
+
+In case you experience any problem with the module, please [open a new issue](https://github.com/sighupio/fury-kubernetes-networking/issues/new/choose).
+
+## License
+
+This module is open-source and it's released under the following [LICENSE](LICENSE)
+
+<!-- </FOOTER> -->
+
 
 ## License
 

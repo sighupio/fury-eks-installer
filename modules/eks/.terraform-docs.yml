@@ -17,6 +17,8 @@ content: |-
 
   # Fury EKS Installer - EKS module
 
+  <!-- <KFD-DOCS> -->
+
   {{ .Requirements }}
 
   {{ .Providers }}
@@ -29,7 +31,9 @@ content: |-
 
   ```hcl
   {{ include "../../example/eks/main.tf" }}
-  ```  
+  ```
+
+  <!-- </KFD-DOCS> -->
 
 output:
   file: "README.md"

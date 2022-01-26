@@ -17,6 +17,8 @@ content: |-
 
   # Fury EKS Installer - vpc-and-vpn module
 
+  <!-- <KFD-DOCS> -->
+
   {{ .Requirements }}
 
   {{ .Providers }}
@@ -29,7 +31,9 @@ content: |-
 
   ```hcl
   {{ include "../../example/vpc-and-vpn/main.tf" }}
-  ```  
+  ```
+
+  <!-- </KFD-DOCS> -->
 
 output:
   file: "README.md"

@@ -1,5 +1,5 @@
 <h1>
-    <img src="./docs/assets/fury_installer.png?raw=true" align="left" width="90" style="margin-right: 15px"/>
+    <img src="./docs/assets/fury_installer.png?raw=true" align="left" width="105" style="margin-right: 15px"/>
     Fury EKS Installer
 </h1>
 
@@ -13,7 +13,18 @@
 
 If you are new to Kubernetes Fury please refer to the [official documentation][kfd-docs] on how to get started.
 
-## Overview
+## Modules
+
+The installer is composed of two different terraform modules:
+
+|            Module             |                  Description                   |
+| ----------------------------- | ---------------------------------------------- |
+| [VPC and VPN][vpc-vpn-module] | Deploy the necessary networking infrastructure |
+| [EKS][eks-module]             | Deploy the EKS cluster                         |
+
+Click on each module to see its full documentation.
+
+## Architecture
 
 The EKS installers deploys and configures a production-ready EKS cluster without having to learn all internals of the service.
 
@@ -26,17 +37,6 @@ The [VPC and VPN module][vpc-vpn-module] setups all the necessary networking inf
 The bastion host includes a OpenVPN instance easily manageable by using [furyagent][furyagent] to provide access to the cluster.
 
 > 🕵🏻‍♂️ [Furyagent][furyagent] is a tool developed by SIGHUP to manage OpenVPN and SSH user access to the bastion host.
-
-## Modules
-
-The installer is composed of two different terraform modules:
-
-|            Module             |                  Description                   |
-| ----------------------------- | ---------------------------------------------- |
-| [VPC and VPN][vpc-vpn-module] | Deploy the necessary networking infrastructure |
-| [EKS][eks-module]             | Deploy the EKS cluster                         |
-
-Click on each module to see its full documentation.
 
 ## Usage
 
@@ -68,6 +68,18 @@ Please refer to each module documentation and the [example](example/) folder for
 - [Create a kubeconfig for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
 - [Tagging your Amazon EKS resources](https://docs.aws.amazon.com/eks/latest/userguide/eks-using-tags.html)
 
+<!-- Links -->
+
+[eks installer docs]: https://docs.kubernetesfury.com/docs/installers/managed/eks/
+[vpc-vpn-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/vpc-and-vpn
+[eks-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/eks
+[kfd-docs]: https://docs.kubernetesfury.com/docs/distribution/
+
+[furyagent]: https://github.com/sighupio/furyagent
+[tunnelblick]: https://tunnelblick.net/downloads.html
+[openvpn-connect]: https://openvpn.net/vpn-client/
+
+<!-- </KFD-DOCS> -->
 <!-- <FOOTER> -->
 
 ## Contributing
@@ -83,16 +95,3 @@ In case you experience any problem with the module, please [open a new issue](ht
 This module is open-source and it's released under the following [LICENSE](LICENSE)
 
 <!-- </FOOTER> -->
-
-
-## License
-
-For license details please see [LICENSE](LICENSE)
-
-[eks installer docs]: https://docs.kubernetesfury.com/docs/installers/managed/eks/
-[vpc-vpn-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/vpc-and-vpn
-[eks-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/eks
-
-[furyagent]: https://github.com/sighupio/furyagent
-[tunnelblick]: https://tunnelblick.net/downloads.html
-[openvpn-connect]: https://openvpn.net/vpn-client/

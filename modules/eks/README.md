@@ -2,6 +2,8 @@
 
 # Fury EKS Installer - EKS module
 
+<!-- <KFD-DOCS> -->
+
 ## Requirements
 
 | Name | Version |
@@ -53,7 +55,7 @@ terraform {
 }
 
 module "my-cluster" {
-  source = "../modules/eks"
+  source = "../../modules/eks"
 
   cluster_name    = "my-cluster"
   cluster_version = "1.14"
@@ -113,5 +115,7 @@ module "my-cluster" {
   eks_map_accounts = []
 }
 
-```  
+```
+
+<!-- </KFD-DOCS> -->
 <!-- END_TF_DOCS -->

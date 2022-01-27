@@ -1,5 +1,9 @@
+terraform {
+  required_version = "0.15.4"
+}
+
 module "vpc-and-vpn" {
-    source = "../modules/vpc-and-vpn"
+    source = "../../modules/vpc-and-vpn"
 
     name = "fury"
     

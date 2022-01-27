@@ -3,7 +3,7 @@ terraform {
 }
 
 module "my-cluster" {
-  source = "../modules/eks"
+  source = "../../modules/eks"
 
   cluster_name    = "my-cluster"
   cluster_version = "1.14"

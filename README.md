@@ -60,6 +60,8 @@ To create the cluster via the installers:
 
 Please refer to each module documentation and the [example](example/) folder for more details.
 
+> You can follow the [Fury on EKS quick start guide][fury-eks-quickstart] for a more detailed walkthrough
+
 ## Useful links
 
 - [EKS pricing](https://aws.amazon.com/eks/pricing/)
@@ -71,6 +73,7 @@ Please refer to each module documentation and the [example](example/) folder for
 <!-- Links -->
 
 [eks installer docs]: https://docs.kubernetesfury.com/docs/installers/managed/eks/
+[fury-eks-quickstart]: https://docs.kubernetesfury.com/docs/fury-on-eks
 [vpc-vpn-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/vpc-and-vpn
 [eks-module]: https://github.com/sighupio/fury-eks-installer/tree/master/modules/eks
 [kfd-docs]: https://docs.kubernetesfury.com/docs/distribution/

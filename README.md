@@ -28,7 +28,7 @@ Click on each module to see its full documentation.
 
 The EKS installers deploys and configures a production-ready EKS cluster without having to learn all internals of the service.
 
-<img src="./docs/assets/fury_installer_architecture.png?raw=true" width="600"/>
+![Fury Architecture](./docs/assets/fury_installer_architecture.png)
 
 The [EKS module][eks-module] deploys a **private control plane** cluster, where the control plane endpoint is not publicly accessible.
 

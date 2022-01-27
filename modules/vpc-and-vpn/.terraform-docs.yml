@@ -1,0 +1,63 @@
+formatter: "markdown" # this is required
+
+version: ""
+
+header-from: main.tf
+footer-from: ""
+
+recursive:
+  enabled: false
+  path: modules
+
+sections:
+  hide: ["resources", "data-sources", "modules"]
+  show: []
+
+content: |-
+
+  # Fury EKS Installer - vpc-and-vpn module
+
+  <!-- <KFD-DOCS> -->
+
+  {{ .Requirements }}
+
+  {{ .Providers }}
+
+  {{ .Inputs }}  
+
+  {{ .Outputs }}
+
+  ## Usage
+
+  ```hcl
+  {{ include "../../example/vpc-and-vpn/main.tf" }}
+  ```
+
+  <!-- </KFD-DOCS> -->
+
+output:
+  file: "README.md"
+  mode: replace
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: name
+
+settings:
+  anchor: false
+  color: true
+  default: true
+  description: false
+  escape: true
+  hide-empty: false
+  html: false
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: true
+  type: false

@@ -77,7 +77,8 @@ module "my-cluster" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
-      spot_instance : true
+      spot_instance : true # optionally create spot instances
+      os = "ami-0caf35bc73450c396" # Defining a custom AMI optionally
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null

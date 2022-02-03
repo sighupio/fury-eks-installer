@@ -10,7 +10,7 @@ locals {
     for worker in var.node_pools :
     {
       "name" : worker.name,
-      "ami_id" : element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
+      "os" : worker.os != null ? worker.os : element(data.aws_ami.eks_worker.*.image_id, index(var.node_pools.*.name, worker.name)),
       "security_group_id" : element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, worker.name)),
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
@@ -64,7 +64,7 @@ module "cluster" {
     for node_pool in local.parsed_node_pools :
     {
       name                          = lookup(node_pool, "name")
-      ami_id                        = lookup(node_pool, "ami_id")
+      ami_id                        = lookup(node_pool, "os")
       asg_desired_capacity          = lookup(node_pool, "min_size")
       asg_max_size                  = lookup(node_pool, "max_size")
       asg_min_size                  = lookup(node_pool, "min_size")

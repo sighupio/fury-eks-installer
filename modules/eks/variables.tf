@@ -39,6 +39,7 @@ variable "node_pools" {
     min_size              = number
     max_size              = number
     instance_type         = string
+    os                    = optional(string)
     spot_instance         = bool
     max_pods              = optional(number) # null to use default upstream configuration
     volume_size           = number
@@ -46,7 +47,7 @@ variable "node_pools" {
     labels                = map(string)
     taints                = list(string)
     tags                  = map(string)
-    eks_target_group_arns = list(string)
+    eks_target_group_arns = optional(list(string))
     additional_firewall_rules = list(object({
       name       = string
       direction  = string

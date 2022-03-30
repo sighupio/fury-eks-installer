@@ -6,7 +6,7 @@ module "my-cluster" {
   source = "../../modules/eks"
 
   cluster_name    = "my-cluster"
-  cluster_version = "1.14"
+  cluster_version = "1.20"
 
   network         = "vpc-id0"
   subnetworks = [
@@ -25,7 +25,6 @@ module "my-cluster" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
-      spot_instance : true
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
@@ -38,13 +37,46 @@ module "my-cluster" {
           ports : "80-80"
           tags : {
             "hello" : "tag",
-            "cluster-tags" : "my-value-OVERRIDE"
+            "cluster-tags" : "my-value-OVERRIDE-1"
           }
         }
       ]
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.23.0"
+        "sighup.io/fury-release" : "v1.23.1"
+      }
+      taints : []
+      tags : {
+        "node-tags" : "exists"
+      }
+      # max_pods : null # To use default EKS setting set it to null or do not set it
+    },{
+      name : "m5-node-pool-spot"
+      version : null # To use same value as cluster_version
+      min_size : 1
+      max_size : 2
+      instance_type : "m5.large"
+      spot_instance : true # optionally create spot instances
+      os : "ami-0caf35bc73450c396" # optionally define a custom AMI
+      volume_size : 100
+      subnetworks : null
+      eks_target_group_arns : null
+      additional_firewall_rules : [
+        {
+          name : "Debug 2"
+          direction : "ingress"
+          cidr_block : "0.0.0.0/0"
+          protocol : "TCP"
+          ports : "80-80"
+          tags : {
+            "hello" : "tag",
+            "cluster-tags" : "my-value-OVERRIDE-2"
+          }
+        }
+      ]
+      labels : {
+        "node.kubernetes.io/role" : "app"
+        "sighup.io/fury-release" : "v1.23.1"
       }
       taints : []
       tags : {

@@ -3,7 +3,7 @@
     Fury EKS Installer
 </h1>
 
-![Release](https://img.shields.io/github/v/release/sighupio/fury-eks-installer?label=Latest%20Release)
+![Release](https://img.shields.io/github/v/release/sighupio/https://img.shields.io/badge/Latest%20Release-v1.9.0-blue)
 ![License](https://img.shields.io/github/license/sighupio/fury-eks-installer?label=License)
 [![Slack](https://img.shields.io/badge/slack-@kubernetes/fury-yellow.svg?logo=slack&label=Slack)](https://kubernetes.slack.com/archives/C0154HYTAQH)
 

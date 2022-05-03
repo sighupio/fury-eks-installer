@@ -22,5 +22,6 @@ locals {
     "eu-south-1" : "ami-0e3c0649c89ccddc9"
     "eu-north-1" : "ami-01450210d4ebb3bab"
     "eu-central-1" : "ami-09f14afb2e15caab5"
+    "us-east-1" : "ami-0c4f7023847b90238"
   }
 }

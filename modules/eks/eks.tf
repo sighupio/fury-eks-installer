@@ -13,8 +13,8 @@ locals {
       "security_group_id" : element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, worker.name)),
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
-      // we make the double of the current given spot_price to avoid any price volatily. 
-      "spot_instance_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2 : "",
+      // we make the double of the current given spot_price to avoid any price volatily.
+      "spot_instance_price" : worker.spot_instance == true ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2 : "",
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
@@ -22,7 +22,7 @@ locals {
       "eks_target_group_arns" : worker.eks_target_group_arns
       "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
       "kubelet_extra_args" : <<EOT
-%{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels=sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}${worker.spot_instance ? "node.kubernetes.io/lifecycle=spot" : ""}
+%{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels=sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}${worker.spot_instance == true ? "node.kubernetes.io/lifecycle=spot" : ""}
 %{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}
 EOT
     }

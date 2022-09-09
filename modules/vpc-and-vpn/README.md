@@ -8,7 +8,7 @@
 
 | Name | Version |
 |------|---------|
-| terraform | 0.15.4 |
+| terraform | 1.2.9 |
 | aws | 3.37.0 |
 | external | 2.0.0 |
 | local | 2.0.0 |
@@ -40,7 +40,7 @@
 | vpn\_operator\_name | VPN operator name. Used to log into the instance via SSH | `"sighup"` | no |
 | vpn\_port | VPN Server Port | `1194` | no |
 | vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example angelbarrera92 | n/a | yes |
-| vpn\_subnetwork\_cidr | VPN Subnet CIDR, should be different from the network\_cidr | n/a | yes |  
+| vpn\_subnetwork\_cidr | VPN Subnet CIDR, should be different from the network\_cidr | n/a | yes |
 
 ## Outputs
 
@@ -59,18 +59,18 @@
 
 ```hcl
 terraform {
-  required_version = "0.15.4"
+  required_version = "1.2.9"
 }
 
 module "vpc-and-vpn" {
     source = "../../modules/vpc-and-vpn"
 
     name = "fury"
-    
+
     network_cidr = "10.0.0.0/16"
     public_subnetwork_cidrs = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
     private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-    
+
     vpn_subnetwork_cidr = "192.168.200.0/24"
     vpn_ssh_users = ["github-user"]
 }

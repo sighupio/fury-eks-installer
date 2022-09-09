@@ -1,12 +1,8 @@
-terraform {
-  required_version = "0.15.4"
-}
-
-module "my-cluster" {
+module "fury_example" {
   source = "../../modules/eks"
 
-  cluster_name    = "my-cluster"
-  cluster_version = "1.20"
+  cluster_name    = "fury-example"
+  cluster_version = "1.22"
 
   network         = "vpc-id0"
   subnetworks = [
@@ -17,7 +13,7 @@ module "my-cluster" {
 
   ssh_public_key = "ssh-rsa example"
   dmz_cidr_range = "10.0.4.0/24"
-  
+
   node_pools = [
     {
       name : "m5-node-pool"

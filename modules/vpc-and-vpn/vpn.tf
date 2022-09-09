@@ -5,6 +5,9 @@ data "external" "os" {
 locals {
   os              = data.external.os.result.os
   local_furyagent = local.os == "Darwin" ? "${path.module}/bin/furyagent-darwin-amd64" : "${path.module}/bin/furyagent-linux-amd64"
+  default_vpn_tags = {
+    Name = "${var.name}-openvpn-server"
+  }
 
   vpntemplate_vars = {
     openvpn_port           = var.vpn_port,
@@ -25,7 +28,9 @@ locals {
     servers        = [for serverIP in aws_eip.vpn.*.public_ip : "${serverIP}:${var.vpn_port}"]
     user           = var.vpn_operator_name,
   }
+
   furyagent = templatefile("${path.module}/templates/furyagent.yml", local.furyagent_vars)
+
   users     = var.vpn_ssh_users
   sshkeys_vars = {
     users = local.users
@@ -87,7 +92,8 @@ resource "aws_instance" "vpn" {
   root_block_device {
     volume_size = var.vpn_instance_disk_size
   }
-  tags = var.tags
+
+  tags = merge(local.default_vpn_tags, var.tags)
 }
 
 resource "aws_eip_association" "vpn" {
@@ -101,23 +107,32 @@ resource "aws_eip_association" "vpn" {
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
   bucket_prefix = "${var.name}-bootstrap-bucket-"
-  acl           = "private"
 
   force_destroy = true
 
-  versioning {
-    enabled = true
-  }
+  tags = var.tags
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_acl" "example_bucket_acl" {
+  bucket = aws_s3_bucket.furyagent.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "furyagent" {
+  bucket = aws_s3_bucket.furyagent.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "furyagent" {
+  bucket = aws_s3_bucket.furyagent.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
-
-  tags = var.tags
 }
 
 resource "aws_iam_user" "furyagent" {

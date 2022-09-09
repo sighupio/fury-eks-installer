@@ -1,2 +1,8 @@
 .terraform
 .terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+example/vpc-and-vpn/secrets
+example/vpc-and-vpn/ssh-users.yml

@@ -31,7 +31,7 @@ EOT
 
 module "cluster" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "16.2.0"
+  version = "17.24.0"
 
   cluster_create_timeout                         = "30m"
   cluster_delete_timeout                         = "30m"

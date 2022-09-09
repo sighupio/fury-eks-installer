@@ -1,17 +1,20 @@
+data "terraform_remote_state" "vpc_and_vpn" {
+  backend = "local"
+  config = {
+    path = "${path.module}/../vpc-and-vpn/terraform.tfstate"
+  }
+}
+
 module "fury_example" {
   source = "../../modules/eks"
 
   cluster_name    = "fury-example"
-  cluster_version = "1.22"
+  cluster_version = "1.23"
 
-  network         = "vpc-id0"
-  subnetworks = [
-    "subnet-id1",
-    "subnet-id2",
-    "subnet-id3",
-  ]
+  network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
+  subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.public_subnets
 
-  ssh_public_key = "ssh-rsa example"
+  ssh_public_key = var.ssh_public_key
   dmz_cidr_range = "10.0.4.0/24"
 
   node_pools = [
@@ -83,7 +86,7 @@ module "fury_example" {
   ]
 
   tags = {
-    "my-tags" : "my-value"
+    Environment: "example"
   }
 
   eks_map_users    = []

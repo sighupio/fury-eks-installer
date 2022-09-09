@@ -15,7 +15,7 @@ module "fury_example" {
   subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.public_subnets
 
   ssh_public_key = var.ssh_public_key
-  dmz_cidr_range = "10.0.4.0/24"
+  dmz_cidr_range = "10.0.0.0/16"
 
   node_pools = [
     {

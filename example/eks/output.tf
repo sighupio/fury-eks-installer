@@ -4,8 +4,8 @@ output "kube_config" {
 apiVersion: v1
 clusters:
 - cluster:
-    server: ${module.my-cluster.cluster_endpoint}
-    certificate-authority-data: ${module.my-cluster.cluster_certificate_authority}
+    server: ${module.fury_example.cluster_endpoint}
+    certificate-authority-data: ${module.fury_example.cluster_certificate_authority}
   name: kubernetes
 contexts:
 - context:

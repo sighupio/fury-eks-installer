@@ -8,7 +8,7 @@
 
 | Name | Version |
 |------|---------|
-| terraform | 0.15.4 |
+| terraform | 1.2.9 |
 | aws | 3.37.0 |
 | kubernetes | 1.13.3 |
 
@@ -33,7 +33,7 @@
 | resource\_group\_name | Resource group name where every resource will be placed. Required only in AKS installer (*) | `""` | no |
 | ssh\_public\_key | Cluster administrator public ssh key. Used to access cluster nodes with the operator\_ssh\_user | n/a | yes |
 | subnetworks | List of subnets where the cluster will be hosted | n/a | yes |
-| tags | The tags to apply to all resources | `{}` | no |  
+| tags | The tags to apply to all resources | `{}` | no |
 
 ## Outputs
 
@@ -51,7 +51,7 @@
 
 ```hcl
 terraform {
-  required_version = "0.15.4"
+  required_version = "1.2.9"
 }
 
 module "my-cluster" {
@@ -69,7 +69,7 @@ module "my-cluster" {
 
   ssh_public_key = "ssh-rsa example"
   dmz_cidr_range = "10.0.4.0/24"
-  
+
   node_pools = [
     {
       name : "m5-node-pool"
@@ -109,7 +109,7 @@ module "my-cluster" {
       max_size : 2
       instance_type : "m5.large"
       spot_instance : true # optionally create spot instances
-      os : "ami-0caf35bc73450c396" # optionally define a custom AMI 
+      os : "ami-0caf35bc73450c396" # optionally define a custom AMI
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null

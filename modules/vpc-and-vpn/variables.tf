@@ -1,5 +1,5 @@
 variable "name" {
-  description = "Name of the resources. Used as cluster name"
+  description = "Name of the resources"
   type        = string
 }
 

@@ -10,7 +10,7 @@ that cannot be automated with the following script.
 # First of all, export the needed env vars for the aws provider to work
 export AWS_ACCESS_KEY_ID=<YOUR_ACCESS_KEY_ID>
 export AWS_SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
-export AWS_REGION=eu-<YOUR_REGION>
+export AWS_REGION=<YOUR_REGION>
 
 # Bring up the vpc and vpn
 cd example/vpc-and-vpn
@@ -28,4 +28,10 @@ cp main.auto.tfvars.dist main.auto.tfvars
 # TASK: fill in main.auto.tfvars with your data
 terraform init
 terraform apply
+
+# Once all the above is done you can dump the kube config to a file of your choice
+terraform output -raw kubeconfig > /var/tmp/.kubeconfig
+
+# Last but not least, you can verify your cluster is up and running
+KUBECONFIG=/var/tmp/.kubeconfig kubectl get nodes
 ```

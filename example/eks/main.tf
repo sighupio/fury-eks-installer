@@ -12,7 +12,7 @@ module "fury_example" {
   cluster_version = "1.23"
 
   network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
-  subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.public_subnets
+  subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
 
   ssh_public_key = var.ssh_public_key
   dmz_cidr_range = "10.0.0.0/16"

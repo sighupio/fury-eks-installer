@@ -57,7 +57,7 @@
 
 ## Usage
 
-See the [example folder](example/vpc-and-vpn) for an overview on how to use this module.
+See the [example folder](../../example/vpc-and-vpn/) for an overview on how to use this module.
 
 <!-- </KFD-DOCS> -->
 <!-- END_TF_DOCS -->

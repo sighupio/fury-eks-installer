@@ -39,7 +39,7 @@ module "cluster" {
   cluster_create_endpoint_private_access_sg_rule = true
   cluster_endpoint_private_access_cidrs          = local.parsed_dmz_cidr_range
   cluster_endpoint_public_access                 = false # SIGHUP only provides private clusters
-  cluster_log_retention_in_days                  = 90    # Default value
+  cluster_log_retention_in_days                  = var.cluster_log_retention_days
   cluster_enabled_log_types                      = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   cluster_name                                   = var.cluster_name
   cluster_version                                = var.cluster_version

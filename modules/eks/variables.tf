@@ -8,6 +8,12 @@ variable "cluster_version" {
   description = "Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9"
 }
 
+variable "cluster_log_retention_days" {
+  type        = number
+  default     = 90
+  description = "Kubernetes Cluster log retention in days. Defaults to 90 days."
+}
+
 variable "network" {
   type        = string
   description = "Network where the Kubernetes cluster will be hosted"

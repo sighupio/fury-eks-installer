@@ -13,7 +13,7 @@ locals {
       "security_group_id" : element(aws_security_group.node_pool.*.id, index(var.node_pools.*.name, worker.name)),
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
-      // we make the double of the current given spot_price to avoid any price volatily. 
+      // we make the double of the current given spot_price to avoid any price volatily.
       "spot_instance_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2 : "",
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
@@ -56,7 +56,7 @@ module "cluster" {
   tags                                 = var.tags
   vpc_id                               = var.network
   worker_additional_security_group_ids = [aws_security_group.nodes.id]
-  worker_groups = [
+  worker_groups_launch_template = [
     for node_pool in local.parsed_node_pools :
     {
       name                          = lookup(node_pool, "name")

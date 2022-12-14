@@ -27,6 +27,29 @@ locals {
 EOT
     }
   ]
+
+  worker_groups = [
+    for node_pool in local.parsed_node_pools :
+    {
+      name                          = lookup(node_pool, "name")
+      ami_id                        = lookup(node_pool, "os")
+      asg_desired_capacity          = lookup(node_pool, "min_size")
+      asg_max_size                  = lookup(node_pool, "max_size")
+      asg_min_size                  = lookup(node_pool, "min_size")
+      instance_type                 = lookup(node_pool, "instance_type")
+      root_volume_size              = lookup(node_pool, "volume_size")
+      target_group_arns             = lookup(node_pool, "eks_target_group_arns")
+      key_name                      = aws_key_pair.nodes.key_name
+      public_ip                     = false
+      spot_price                    = lookup(node_pool, "spot_instance_price")
+      subnets                       = lookup(node_pool, "subnetworks")
+      additional_security_group_ids = [aws_security_group.nodes.id, lookup(node_pool, "security_group_id")]
+      cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
+      kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
+      tags                          = lookup(node_pool, "tags")
+      bootstrap_extra_args          = lookup(node_pool, "bootstrap_extra_args")
+    }
+  ]
 }
 
 module "cluster" {
@@ -56,28 +79,8 @@ module "cluster" {
   tags                                 = var.tags
   vpc_id                               = var.network
   worker_additional_security_group_ids = [aws_security_group.nodes.id]
-  worker_groups_launch_template = [
-    for node_pool in local.parsed_node_pools :
-    {
-      name                          = lookup(node_pool, "name")
-      ami_id                        = lookup(node_pool, "os")
-      asg_desired_capacity          = lookup(node_pool, "min_size")
-      asg_max_size                  = lookup(node_pool, "max_size")
-      asg_min_size                  = lookup(node_pool, "min_size")
-      instance_type                 = lookup(node_pool, "instance_type")
-      root_volume_size              = lookup(node_pool, "volume_size")
-      target_group_arns             = lookup(node_pool, "eks_target_group_arns")
-      key_name                      = aws_key_pair.nodes.key_name
-      public_ip                     = false
-      spot_price                    = lookup(node_pool, "spot_instance_price")
-      subnets                       = lookup(node_pool, "subnetworks")
-      additional_security_group_ids = [aws_security_group.nodes.id, lookup(node_pool, "security_group_id")]
-      cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
-      kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
-      tags                          = lookup(node_pool, "tags")
-      bootstrap_extra_args          = lookup(node_pool, "bootstrap_extra_args")
-    }
-  ]
-  worker_sg_ingress_from_port = 22
-  write_kubeconfig            = false
+  worker_groups                        = var.node_pools_kind == "launch_configurations" || var.node_pools_kind == "both" ? local.worker_groups : []
+  worker_groups_launch_template        = var.node_pools_kind == "launch_templates" || var.node_pools_kind == "both" ? local.worker_groups : []
+  worker_sg_ingress_from_port          = 22
+  write_kubeconfig                     = false
 }

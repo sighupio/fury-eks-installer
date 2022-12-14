@@ -23,7 +23,7 @@ content: |-
 
   {{ .Providers }}
 
-  {{ .Inputs }}  
+  {{ .Inputs }}
 
   {{ .Outputs }}
 

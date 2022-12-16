@@ -79,8 +79,8 @@ module "cluster" {
   tags                                 = var.tags
   vpc_id                               = var.network
   worker_additional_security_group_ids = [aws_security_group.nodes.id]
-  worker_groups                        = var.node_pools_kind == "launch_configurations" || var.node_pools_kind == "both" ? local.worker_groups : []
-  worker_groups_launch_template        = var.node_pools_kind == "launch_templates" || var.node_pools_kind == "both" ? local.worker_groups : []
+  worker_groups                        = var.node_pools_launch_kind == "launch_configurations" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
+  worker_groups_launch_template        = var.node_pools_launch_kind == "launch_templates" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
   worker_sg_ingress_from_port          = 22
   write_kubeconfig                     = false
 }

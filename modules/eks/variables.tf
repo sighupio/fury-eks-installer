@@ -66,13 +66,13 @@ variable "node_pools" {
   default = []
 }
 
-variable "node_pools_kind" {
+variable "node_pools_launch_kind" {
   description = "Which kind of node pools to create. Valid values are: launch_templates, launch_configurations, both."
   type        = string
   default     = "launch_templates"
 
   validation {
-    condition     = length(regexall("^(launch_templates|launch_configuration|both)$", var.node_pools_kind)) > 0
+    condition     = length(regexall("^(launch_templates|launch_configurations|both)$", var.node_pools_launch_kind)) > 0
     error_message = "ERROR: Valid values are \"launch_templates\", \"launch_configurations\" and \"both\"!"
   }
 }

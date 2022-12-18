@@ -22,19 +22,20 @@
 
 | Name | Description | Default | Required |
 |------|-------------|---------|:--------:|
+| cluster\_log\_retention\_days | Kubernetes Cluster log retention in days. Defaults to 90 days. | `90` | no |
 | cluster\_name | Unique cluster name. Used in multiple resources to identify your cluster resources | n/a | yes |
 | cluster\_version | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9 | n/a | yes |
-| cluster\_log\_retention\_days | Kubernetes Cluster log retention in days. Defaults to 90 days. | 90 | no |
 | dmz\_cidr\_range | Network CIDR range from where cluster control plane will be accessible | n/a | yes |
 | eks\_map\_accounts | Additional AWS account numbers to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_roles | Additional IAM roles to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_users | Additional IAM users to add to the aws-auth configmap | n/a | yes |
 | network | Network where the Kubernetes cluster will be hosted | n/a | yes |
 | node\_pools | An object list defining node pools configurations | `[]` | no |
+| node\_pools\_launch\_kind | Which kind of node pools to create. Valid values are: launch\_templates, launch\_configurations, both. | `"launch_templates"` | no |
 | resource\_group\_name | Resource group name where every resource will be placed. Required only in AKS installer (*) | `""` | no |
 | ssh\_public\_key | Cluster administrator public ssh key. Used to access cluster nodes with the operator\_ssh\_user | n/a | yes |
 | subnetworks | List of subnets where the cluster will be hosted | n/a | yes |
-| tags | The tags to apply to all resources | `{}` | no |  
+| tags | The tags to apply to all resources | `{}` | no |
 
 ## Outputs
 
@@ -59,24 +60,25 @@ module "my-cluster" {
   source = "../../modules/eks"
 
   cluster_name    = "my-cluster"
-  cluster_version = "1.20"
+  cluster_version = "1.24"
 
-  network         = "vpc-id0"
+  network         = "vpc-id"
   subnetworks = [
-    "subnet-id1",
-    "subnet-id2",
-    "subnet-id3",
+    "subnet0-id",
+    "subnet1-id",
+    "subnet2-id",
   ]
 
-  ssh_public_key = "ssh-rsa example"
-  dmz_cidr_range = "10.0.4.0/24"
-  
+  ssh_public_key = "ssh-rsa EXAMPLE"
+  dmz_cidr_range = "0.0.0.0/0"
+
   node_pools = [
     {
       name : "m5-node-pool"
       version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
+      spot_instance: false
       instance_type : "m5.large"
       volume_size : 100
       subnetworks : null
@@ -96,12 +98,15 @@ module "my-cluster" {
       ]
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.23.1"
+        "sighup.io/fury-release" : "v1.24.0"
       }
-      taints : []
+      taints : [
+        "node.kubernetes.io/role=infra:NoSchedule"
+      ]
       tags : {
         "node-tags" : "exists"
       }
+      # max_pods : null # To use default EKS setting set it to null or do not set it
     },
     {
       name : "m5-node-pool-spot"
@@ -110,7 +115,6 @@ module "my-cluster" {
       max_size : 2
       instance_type : "m5.large"
       spot_instance : true # optionally create spot instances
-      os : "ami-0caf35bc73450c396" # optionally define a custom AMI 
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
@@ -129,14 +133,17 @@ module "my-cluster" {
       ]
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.23.1"
+        "sighup.io/fury-release" : "v1.24.0"
       }
       taints : []
       tags : {
         "node-tags" : "exists"
       }
+      # max_pods : null # To use default EKS setting set it to null or do not set it
     },
   ]
+
+  node_pools_launch_kind = "launch_templates"
 
   tags = {
     "my-tags" : "my-value"
@@ -146,7 +153,6 @@ module "my-cluster" {
   eks_map_roles    = []
   eks_map_accounts = []
 }
-
 ```
 
 <!-- </KFD-DOCS> -->

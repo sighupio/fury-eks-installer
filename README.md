@@ -1,9 +1,11 @@
+<!-- markdownlint-disable MD033 -->
 <h1>
     <img src="./docs/assets/fury_installer.png?raw=true" align="left" width="105" style="margin-right: 15px"/>
     Fury EKS Installer
 </h1>
+<!-- markdownlint-enable MD033 -->
 
-![Release](https://img.shields.io/badge/Latest%20Release-v1.9.0-blue)
+![Release](https://img.shields.io/badge/Latest%20Release-v1.10.0-blue)
 ![License](https://img.shields.io/github/license/sighupio/fury-eks-installer?label=License)
 [![Slack](https://img.shields.io/badge/slack-@kubernetes/fury-yellow.svg?logo=slack&label=Slack)](https://kubernetes.slack.com/archives/C0154HYTAQH)
 
@@ -34,11 +36,14 @@ The [EKS module][eks-module] deploys a **private control plane** cluster, where 
 
 The [VPC and VPN module][vpc-vpn-module] setups all the necessary networking infrastructure and a bastion host.
 
-The bastion host includes a OpenVPN instance easily manageable by using [furyagent][furyagent] to provide access to the cluster.
+The bastion host includes an OpenVPN instance easily manageable by using [furyagent][furyagent] to provide access to the cluster.
 
 > 🕵🏻‍♂️ [Furyagent][furyagent] is a tool developed by SIGHUP to manage OpenVPN and SSH user access to the bastion host.
 
 ## Usage
+
+> ⚠️ **WARNING**:
+> if you are upgrading from v1.9.x to v1.10.0, please read [the upgrade guide](docs/upgrades/v1.9-to-v1.10.0.md) first.
 
 ### Requirements
 

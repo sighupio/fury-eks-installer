@@ -37,15 +37,18 @@
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| cluster\_certificate\_authority | The base64 encoded certificate data required to communicate with your cluster. Add this to the certificate-authority-data section of the kubeconfig file for your cluster |
-| cluster\_endpoint | The endpoint for your Kubernetes API server |
-| eks\_cluster\_oidc\_issuer\_url | The URL on the EKS cluster OIDC Issuer |
-| eks\_worker\_iam\_role\_name | Default IAM role name for EKS worker groups |
-| eks\_worker\_security\_group\_id | Security group ID attached to the EKS workers. |
-| eks\_workers\_asg\_names | Names of the autoscaling groups containing workers. |
-| operator\_ssh\_user | SSH user to access cluster nodes with ssh\_public\_key |
+| Name                                         | Description                                                                                                                                                                |
+|----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cluster\_certificate\_authority              | The base64 encoded certificate data required to communicate with your cluster. Add this to the certificate-authority-data section of the kubeconfig file for your cluster. |
+| cluster\_endpoint                            | The endpoint for your Kubernetes API server.                                                                                                                               |
+| eks\_cluster\_oidc\_provider\_arn            | The ARN of the OIDC Provider.                                                                                                                                              |
+| eks\_cluster\_oidc\_issuer\_url              | The URL on the EKS cluster OIDC Issuer.                                                                                                                                    |
+| eks\_cluster\_primary\_security\_group\_id   | The cluster primary security group ID created by the EKS cluster.                                                                                                          |
+| eks\_worker\_additional\_security\_group\_id | Additional security group ID attached to EKS workers.                                                                                                                      |
+| eks\_worker\_iam\_role\_name                 | Default IAM role name for EKS worker groups.                                                                                                                               |
+| eks\_worker\_security\_group\_id             | Security group ID attached to the EKS workers.                                                                                                                             |
+| eks\_workers\_asg\_names                     | Names of the autoscaling groups containing workers.                                                                                                                        |
+| operator\_ssh\_user                          | SSH user to access cluster nodes with ssh\_public\_key                                                                                                                     |
 
 ## Usage
 

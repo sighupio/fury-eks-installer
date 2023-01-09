@@ -18,6 +18,11 @@ output "eks_cluster_oidc_issuer_url" {
   value       = module.cluster.cluster_oidc_issuer_url
 }
 
+output "eks_cluster_oidc_provider_arn" {
+  description = "The ARN of the OIDC Provider"
+  value       = module.cluster.oidc_provider_arn
+}
+
 output "eks_worker_iam_role_name" {
   description = "Default IAM role name for EKS worker groups"
   value       = module.cluster.worker_iam_role_name
@@ -28,7 +33,17 @@ output "eks_workers_asg_names" {
   value       = module.cluster.workers_asg_names
 }
 
+output "eks_cluster_primary_security_group_id" {
+  description = "The cluster primary security group ID created by the EKS cluster on 1.14 or later. Referred to as 'Cluster security group' in the EKS console."
+  value = module.cluster.cluster_primary_security_group_id
+}
+
 output "eks_worker_security_group_id" {
   description = "Security group ID attached to the EKS workers."
   value       = module.cluster.worker_security_group_id
+}
+
+output "eks_worker_additional_security_group_id" {
+  description = "Additional security group ID attached to EKS workers."
+  value       = aws_security_group.nodes.id
 }

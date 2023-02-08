@@ -1,11 +1,11 @@
-output "kube_config" {
+output "kubeconfig" {
   sensitive = true
   value     = <<EOT
 apiVersion: v1
 clusters:
 - cluster:
-    server: ${module.my-cluster.cluster_endpoint}
-    certificate-authority-data: ${module.my-cluster.cluster_certificate_authority}
+    server: ${module.fury_example.cluster_endpoint}
+    certificate-authority-data: ${module.fury_example.cluster_certificate_authority}
   name: kubernetes
 contexts:
 - context:
@@ -19,7 +19,7 @@ users:
 - name: aws
   user:
     exec:
-      apiVersion: client.authentication.k8s.io/v1alpha1
+      apiVersion: client.authentication.k8s.io/v1beta1
       command: aws
       args:
         - "eks"

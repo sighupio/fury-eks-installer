@@ -58,7 +58,6 @@ module "fury_example" {
       instance_type : "m5.large"
       spot_instance : true # optionally create spot instances
       # os : "ami-0caf35bc73450c396" # optionally define a custom AMI
-      # os: "ami-0ab303329574a0338"
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null

@@ -13,7 +13,7 @@ locals {
     openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
     openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
     openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.3.0"
+    furyagent_version      = "v0.2.2"
     furyagent              = indent(6, local_file.furyagent.content),
   }
 

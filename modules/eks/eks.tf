@@ -20,7 +20,7 @@ locals {
       "volume_size" : worker.volume_size,
       "subnetworks" : worker.subnetworks != null ? worker.subnetworks : var.subnetworks
       "eks_target_group_arns" : worker.eks_target_group_arns
-      "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif}",
+      "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif} %{if lookup(worker, "container_runtime", null) == "containerd"}--container-runtime containerd %{endif}",
       "kubelet_extra_args" : <<EOT
 %{if lookup(worker, "max_pods", null) != null}--max-pods ${worker.max_pods} %{endif}--node-labels=sighup.io/cluster=${var.cluster_name},sighup.io/node_pool=${worker.name},%{for k, v in worker.labels}${k}=${v},%{endfor}${worker.spot_instance ? "node.kubernetes.io/lifecycle=spot" : ""}
 %{if length(worker.taints) > 0}--register-with-taints %{for t in worker.taints}${t},%{endfor}%{endif}

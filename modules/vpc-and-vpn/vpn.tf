@@ -87,7 +87,7 @@ resource "aws_instance" "vpn" {
   root_block_device {
     volume_size = var.vpn_instance_disk_size
   }
-  tags = merge({"Name": "${var.name}-vpn"}, var.tags)
+  tags = merge({ "Name" : "${var.name}-vpn-${count.index}" }, var.tags)
 }
 
 resource "aws_eip_association" "vpn" {

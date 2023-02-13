@@ -8,7 +8,7 @@ data "terraform_remote_state" "vpc_and_vpn" {
 module "fury_example" {
   source = "../../modules/eks"
 
-  cluster_name    = "fury-example"
+  cluster_name    = "fury-example"  # mae sure to use the same name you used in the bootstrap.yml file
   cluster_version = "1.24"
 
   network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id

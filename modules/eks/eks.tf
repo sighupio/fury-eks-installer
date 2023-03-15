@@ -58,7 +58,7 @@ module "cluster" {
 
   cluster_create_timeout                         = "30m"
   cluster_delete_timeout                         = "30m"
-  cluster_endpoint_private_access                = true
+  cluster_endpoint_private_access                = var.cluster_endpoint_private_access
   cluster_create_endpoint_private_access_sg_rule = true
   cluster_endpoint_private_access_cidrs          = local.cluster_endpoint_private_access_cidrs
   cluster_endpoint_public_access                 = var.cluster_endpoint_public_access

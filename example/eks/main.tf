@@ -1,23 +1,22 @@
-terraform {
-  required_version = "0.15.4"
+data "terraform_remote_state" "vpc_and_vpn" {
+  backend = "local"
+  config = {
+    path = "${path.module}/../vpc-and-vpn/terraform.tfstate"
+  }
 }
 
-module "my-cluster" {
+module "fury_example" {
   source = "../../modules/eks"
 
-  cluster_name    = "my-cluster"
-  cluster_version = "1.20"
+  cluster_name    = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
+  cluster_version = "1.24"
 
-  network         = "vpc-id0"
-  subnetworks = [
-    "subnet-id1",
-    "subnet-id2",
-    "subnet-id3",
-  ]
+  network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
+  subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
 
-  ssh_public_key = "ssh-rsa example"
-  dmz_cidr_range = "10.0.4.0/24"
-  
+  ssh_public_key = var.ssh_public_key
+  dmz_cidr_range = "10.0.0.0/16"
+
   node_pools = [
     {
       name : "m5-node-pool"
@@ -25,6 +24,7 @@ module "my-cluster" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
+      spot_instance: true
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
@@ -43,7 +43,7 @@ module "my-cluster" {
       ]
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.23.1"
+        "sighup.io/fury-release" : "v1.24.0"
       }
       taints : []
       tags : {
@@ -57,7 +57,7 @@ module "my-cluster" {
       max_size : 2
       instance_type : "m5.large"
       spot_instance : true # optionally create spot instances
-      os : "ami-0caf35bc73450c396" # optionally define a custom AMI
+      # os : "ami-0caf35bc73450c396" # optionally define a custom AMI
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
@@ -76,7 +76,7 @@ module "my-cluster" {
       ]
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.23.1"
+        "sighup.io/fury-release" : "v1.24.0"
       }
       taints : []
       tags : {
@@ -87,7 +87,7 @@ module "my-cluster" {
   ]
 
   tags = {
-    "my-tags" : "my-value"
+    Environment: "kfd-development"
   }
 
   eks_map_users    = []

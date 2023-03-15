@@ -58,10 +58,11 @@ module "cluster" {
 
   cluster_create_timeout                         = "30m"
   cluster_delete_timeout                         = "30m"
-  cluster_endpoint_private_access                = true # SIGHUP only provides private clusters
+  cluster_endpoint_private_access                = true
   cluster_create_endpoint_private_access_sg_rule = true
-  cluster_endpoint_private_access_cidrs          = local.parsed_dmz_cidr_range
-  cluster_endpoint_public_access                 = false # SIGHUP only provides private clusters
+  cluster_endpoint_private_access_cidrs          = local.cluster_endpoint_private_access_cidrs
+  cluster_endpoint_public_access                 = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs           = var.cluster_endpoint_public_access_cidrs
   cluster_log_retention_in_days                  = var.cluster_log_retention_days
   cluster_enabled_log_types                      = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   cluster_name                                   = var.cluster_name

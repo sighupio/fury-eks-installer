@@ -37,7 +37,7 @@ locals {
 //INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
   name_prefix = "${var.name}-"
   tags        = var.tags
 }
@@ -82,7 +82,7 @@ resource "aws_instance" "vpn" {
   ami                    = lookup(local.ubuntu_amis, data.aws_region.current.name, "")
   user_data              = templatefile("${path.module}/templates/vpn.yml", local.vpntemplate_vars)
   instance_type          = var.vpn_instance_type
-  subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
+  subnet_id              = element(var.public_subnets, count.index % length(var.public_subnets))
   vpc_security_group_ids = [aws_security_group.vpn.id]
   source_dest_check      = false
   root_block_device {

@@ -8,6 +8,12 @@ variable "network_cidr" {
   type        = string
 }
 
+variable "public_subnets" {
+  description = "List of IDs of public subnets"
+  type        = list(string)
+  default     = []
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -19,39 +25,10 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "public_subnets" {
-  description = "List of IDs of public subnets"
-  type        = list(string)
-  default     = []
-}
-
-variable "vpn_enabled" {
-  description = "Enable VPN"
-  type        = bool
-  default     = true
-}
-
-variable "vpn_subnetwork_cidr" {
-  description = "VPN Subnet CIDR, should be different from the network_cidr"
-  type        = string
-}
-
-variable "vpn_instances" {
-  description = "VPN Servers"
+variable "vpn_dhparams_bits" {
+  description = "Diffie-Hellman (D-H) key size in bytes"
   type        = number
-  default     = 1
-}
-
-variable "vpn_port" {
-  description = "VPN Server Port"
-  type        = number
-  default     = 1194
-}
-
-variable "vpn_instance_type" {
-  description = "EC2 instance type"
-  type        = string
-  default     = "t3.micro"
+  default     = 2048
 }
 
 variable "vpn_instance_disk_size" {
@@ -60,16 +37,16 @@ variable "vpn_instance_disk_size" {
   default     = 50
 }
 
-variable "vpn_operator_name" {
-  description = "VPN operator name. Used to log into the instance via SSH"
+variable "vpn_instance_type" {
+  description = "EC2 instance type"
   type        = string
-  default     = "sighup"
+  default     = "t3.micro"
 }
 
-variable "vpn_dhparams_bits" {
-  description = "Diffie-Hellman (D-H) key size in bytes"
+variable "vpn_instances" {
+  description = "VPN Servers"
   type        = number
-  default     = 2048
+  default     = 1
 }
 
 variable "vpn_operator_cidrs" {
@@ -78,8 +55,25 @@ variable "vpn_operator_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "vpn_operator_name" {
+  description = "VPN operator name. Used to log into the instance via SSH"
+  type        = string
+  default     = "sighup"
+}
+
+variable "vpn_port" {
+  description = "VPN Server Port"
+  type        = number
+  default     = 1194
+}
+
 variable "vpn_ssh_users" {
   description = "GitHub users id to sync public rsa keys. Example angelbarrera92"
   type        = list(string)
   default     = []
+}
+
+variable "vpn_subnetwork_cidr" {
+  description = "VPN Subnet CIDR, should be different from the network_cidr"
+  type        = string
 }

@@ -1,5 +1,5 @@
 output "furyagent" {
-  description = "furyagent.yml used by the vpn instance and ready to use to create a vpn profile"
+  description = "furyagent.yml used by the VPN instance and ready to use to create a VPN profile"
   sensitive   = true
   value       = local.furyagent
 }

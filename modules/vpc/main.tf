@@ -1,5 +1,5 @@
 terraform {
-  required_version = "0.15.4"
+  required_version = ">= 0.15.4"
   required_providers {
     local    = "2.0.0"
     null     = "3.0.0"

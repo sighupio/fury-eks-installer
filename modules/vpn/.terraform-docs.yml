@@ -30,7 +30,7 @@ content: |-
   ## Usage
 
   ```hcl
-  {{ include "../../example/vpn/main.tf" }}
+  {{ include "../../examples/vpn/main.tf" }}
   ```
 
   <!-- </KFD-DOCS> -->

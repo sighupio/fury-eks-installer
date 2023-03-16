@@ -44,13 +44,13 @@ variable "vpn_instance_type" {
 }
 
 variable "vpn_instances" {
-  description = "VPN Servers"
+  description = "number of VPN Servers (bastions) to create"
   type        = number
   default     = 1
 }
 
 variable "vpn_operator_cidrs" {
-  description = "VPN Operator cidrs. Used to log into the instance via SSH"
+  description = "List of CIDRs allowed to log into the instance via SSH"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
@@ -74,6 +74,6 @@ variable "vpn_ssh_users" {
 }
 
 variable "vpn_subnetwork_cidr" {
-  description = "VPN Subnet CIDR, should be different from the network_cidr"
+  description = "CIDR used to assign VPN clients IP addresses, should be different from the network_cidr"
   type        = string
 }

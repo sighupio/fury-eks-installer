@@ -36,7 +36,7 @@ The EKS installers deploys and configures a production-ready EKS cluster without
 The [EKS module][eks-module] deploys a **private control plane** cluster, where the control plane endpoint is not publicly accessible.
 
 The [VPC module][vpc-module] setups all the necessary networking infrastructure.
-The [VPN module][vpn-module] setups a bastion host with an openvpn server on.
+The [VPN module][vpn-module] setups one or more bastion hosts with an OpenVPN server.
 
 The bastion host includes an OpenVPN instance easily manageable by using [furyagent][furyagent] to provide access to the cluster.
 

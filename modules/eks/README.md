@@ -20,24 +20,25 @@
 
 ## Inputs
 
-| Name                                     | Description                                                                                                                                            | Default              | Required |
-|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|:--------:|
-| cluster\_endpoint\_public\_access        | Indicates whether or not the Amazon EKS public API server endpoint is enabled.                                                                         | `false`              |    no    |
-| cluster\_endpoint\_public\_access\_cidrs | List of CIDR blocks which can access the Amazon EKS public API server endpoint.                                                                        | `["0.0.0.0/0"]`      |    no    |
-| cluster\_log\_retention\_days            | Kubernetes Cluster log retention in days. Defaults to 90 days.                                                                                         | `90`                 |    no    |
-| cluster\_name                            | Unique cluster name. Used in multiple resources to identify your cluster resources                                                                     | n/a                  |   yes    |
-| cluster\_version                         | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9 | n/a                  |   yes    |
-| dmz\_cidr\_range                         | CIDR block which can access the Amazon EKS private API server endpoint.                                                                                | `"0.0.0.0/0"`        |    no    |
-| eks\_map\_accounts                       | Additional AWS account numbers to add to the aws-auth configmap                                                                                        | n/a                  |   yes    |
-| eks\_map\_roles                          | Additional IAM roles to add to the aws-auth configmap                                                                                                  | n/a                  |   yes    |
-| eks\_map\_users                          | Additional IAM users to add to the aws-auth configmap                                                                                                  | n/a                  |   yes    |
-| network                                  | Network where the Kubernetes cluster will be hosted                                                                                                    | n/a                  |   yes    |
-| node\_pools                              | An object list defining node pools configurations                                                                                                      | `[]`                 |    no    |
-| node\_pools\_launch\_kind                | Which kind of node pools to create. Valid values are: launch\_templates, launch\_configurations, both.                                                 | `"launch_templates"` |    no    |
-| resource\_group\_name                    | Resource group name where every resource will be placed. Required only in AKS installer (*)                                                            | `""`                 |    no    |
-| ssh\_public\_key                         | Cluster administrator public ssh key. Used to access cluster nodes with the operator\_ssh\_user                                                        | n/a                  |   yes    |
-| subnetworks                              | List of subnets where the cluster will be hosted                                                                                                       | n/a                  |   yes    |
-| tags                                     | The tags to apply to all resources                                                                                                                     | `{}`                 |    no    |
+| Name                                      | Description                                                                                                                                            | Default              | Required |
+|-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|:--------:|
+| cluster\_endpoint\_private\_access        | Indicates whether or not the Amazon EKS private API server endpoint is enabled.                                                                        | `true`               |    no    |
+| cluster\_endpoint\_private\_access\_cidrs | List of CIDR blocks which can access the Amazon EKS private API server endpoint.                                                                       | `["10.0.0.0/16"]`    |    no    |
+| cluster\_endpoint\_public\_access         | Indicates whether or not the Amazon EKS public API server endpoint is enabled.                                                                         | `false`              |    no    |
+| cluster\_endpoint\_public\_access\_cidrs  | List of CIDR blocks which can access the Amazon EKS public API server endpoint.                                                                        | `["0.0.0.0/0"]`      |    no    |
+| cluster\_log\_retention\_days             | Kubernetes Cluster log retention in days. Defaults to 90 days.                                                                                         | `90`                 |    no    |
+| cluster\_name                             | Unique cluster name. Used in multiple resources to identify your cluster resources                                                                     | n/a                  |   yes    |
+| cluster\_version                          | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9 | n/a                  |   yes    |
+| eks\_map\_accounts                        | Additional AWS account numbers to add to the aws-auth configmap                                                                                        | n/a                  |   yes    |
+| eks\_map\_roles                           | Additional IAM roles to add to the aws-auth configmap                                                                                                  | n/a                  |   yes    |
+| eks\_map\_users                           | Additional IAM users to add to the aws-auth configmap                                                                                                  | n/a                  |   yes    |
+| network                                   | Network where the Kubernetes cluster will be hosted                                                                                                    | n/a                  |   yes    |
+| node\_pools                               | An object list defining node pools configurations                                                                                                      | `[]`                 |    no    |
+| node\_pools\_launch\_kind                 | Which kind of node pools to create. Valid values are: launch\_templates, launch\_configurations, both.                                                 | `"launch_templates"` |    no    |
+| resource\_group\_name                     | Resource group name where every resource will be placed. Required only in AKS installer (*)                                                            | `""`                 |    no    |
+| ssh\_public\_key                          | Cluster administrator public ssh key. Used to access cluster nodes with the operator\_ssh\_user                                                        | n/a                  |   yes    |
+| subnetworks                               | List of subnets where the cluster will be hosted                                                                                                       | n/a                  |   yes    |
+| tags                                      | The tags to apply to all resources                                                                                                                     | `{}`                 |    no    |
 
 ## Outputs
 
@@ -74,7 +75,12 @@ module "fury_example" {
   subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
 
   ssh_public_key = var.ssh_public_key
-  dmz_cidr_range = "10.0.0.0/16"
+
+  cluster_endpoint_private_access = true
+  cluster_endpoint_private_access_cidrs = ["10.0.0.0/16"]
+
+  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access_cidrs = ["80.253.32.0/20"]
 
   node_pools = [
     {

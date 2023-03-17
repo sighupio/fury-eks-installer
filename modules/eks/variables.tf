@@ -24,15 +24,6 @@ variable "subnetworks" {
   description = "List of subnets where the cluster will be hosted"
 }
 
-variable "dmz_cidr_range" {
-  description = "CIDR blocks which can access the Amazon EKS private API server endpoint."
-  default = "0.0.0.0/0"
-}
-
-locals {
-  cluster_endpoint_private_access_cidrs = flatten([var.dmz_cidr_range])
-}
-
 variable "ssh_public_key" {
   type        = string
   description = "Cluster administrator public ssh key. Used to access cluster nodes with the operator_ssh_user"
@@ -144,6 +135,12 @@ variable "cluster_endpoint_private_access" {
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled"
   type        = bool
   default     = true
+}
+
+variable "cluster_endpoint_private_access_cidrs" {
+  description = "List of CIDR blocks which can access the Amazon EKS private API server endpoint"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
 }
 
 variable "cluster_endpoint_public_access" {

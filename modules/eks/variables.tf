@@ -76,12 +76,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "Resource group name where every resource will be placed. Required only in AKS installer (*)"
-  default     = ""
-}
-
 variable "eks_map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap"
   type        = list(string)

@@ -37,7 +37,7 @@ locals {
 //INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_vpc.this.id
   name_prefix = "${var.name}-"
   tags        = var.tags
 }

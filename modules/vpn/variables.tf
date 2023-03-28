@@ -3,11 +3,6 @@ variable "name" {
   type        = string
 }
 
-variable "network_cidr" {
-  description = "VPC Network CIDR"
-  type        = string
-}
-
 variable "public_subnets" {
   description = "List of IDs of public subnets"
   type        = list(string)
@@ -65,6 +60,15 @@ variable "vpn_port" {
   description = "OpenVPN Server listening port"
   type        = number
   default     = 1194
+}
+
+variable "vpn_routes" {
+  description = "VPN routes"
+  type = list(object({
+    network = string
+    netmask = string
+  }))
+  default = null
 }
 
 variable "vpn_ssh_users" {

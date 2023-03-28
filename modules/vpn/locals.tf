@@ -2,6 +2,8 @@ locals {
   os              = data.external.os.result.os
   local_furyagent = local.os == "Darwin" ? "${path.module}/bin/furyagent-darwin-amd64" : "${path.module}/bin/furyagent-linux-amd64"
 
+  vpc_cidr_block = data.aws_vpc.this.cidr_block
+
   # https://cloud-images.ubuntu.com/locator/ec2/
   # filter: 20.04 LTS eu- ebs-ssd 2020 amd64
   ubuntu_amis = {
@@ -14,16 +16,23 @@ locals {
     "us-east-1" : "ami-0c4f7023847b90238"
   }
 
-
   vpntemplate_vars = {
     openvpn_port           = var.vpn_port,
     openvpn_subnet_network = cidrhost(var.vpn_subnetwork_cidr, 0),
     openvpn_subnet_netmask = cidrnetmask(var.vpn_subnetwork_cidr),
-    openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
-    openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
-    openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.2.2"
-    furyagent              = indent(6, local_file.furyagent.content),
+    openvpn_routes = coalesce(
+      var.vpn_routes,
+      [
+        {
+          "network" : cidrhost(local.vpc_cidr_block, 0),
+          "netmask" : cidrnetmask(local.vpc_cidr_block)
+        }
+      ]
+    ),
+    openvpn_dns_servers  = [cidrhost(local.vpc_cidr_block, 2)], # The second ip is the DNS in AWS
+    openvpn_dhparam_bits = var.vpn_dhparams_bits,
+    furyagent_version    = "v0.2.2"
+    furyagent            = indent(6, local_file.furyagent.content),
   }
 
   furyagent_vars = {

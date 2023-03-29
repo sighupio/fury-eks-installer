@@ -19,22 +19,22 @@ No requirements.
 
 ## Inputs
 
-| Name                      | Description                                                     | Default               | Required |
-|---------------------------|-----------------------------------------------------------------|-----------------------|:--------:|
-| name                      | Name of the resources. Used as cluster name                     | n/a                   |   yes    |
-| public\_subnets           | List of IDs of the public subnets to use.                       | `[]`                  |    no    |
-| tags                      | A map of tags to add to all resources                           | `{}`                  |    no    |
-| vpc\_id                   | Id of the VPC to create the VPN in.                             | n/a                   |   yes    |
-| vpn\_dhparams\_bits       | Diffie-Hellman (D-H) key size in bytes                          | `2048`                |    no    |
-| vpn\_instance\_disk\_size | VPN main disk size                                              | `50`                  |    no    |
-| vpn\_instance\_type       | EC2 instance type                                               | `"t3.micro"`          |    no    |
-| vpn\_instances            | VPN Servers                                                     | `1`                   |    no    |
-| vpn\_operator\_cidrs      | VPN Operator cidrs. Used to log into the instance via SSH       | ```[ "0.0.0.0/0" ]``` |    no    |
-| vpn\_operator\_name       | VPN operator name. Used to log into the instance via SSH        | `"sighup"`            |    no    |
-| vpn\_port                 | VPN Server Port                                                 | `1194`                |    no    |
-| vpn_\routes               | VPN routes                                                      | `[]`                  |    no    |
-| vpn\_ssh\_users           | GitHub users id to sync public rsa keys. Example angelbarrera92 | `[]`                  |    no    |
-| vpn\_subnetwork\_cidr     | VPN Subnet CIDR, should be different from the network\_cidr     | n/a                   |   yes    |
+| Name | Description | Default | Required |
+|------|-------------|---------|:--------:|
+| name | Name of the resources. Used as cluster name | n/a | yes |
+| public\_subnets | List of IDs of public subnets | `[]` | no |
+| tags | A map of tags to add to all resources | `{}` | no |
+| vpc\_id | The ID of the VPC | n/a | yes |
+| vpn\_dhparams\_bits | Diffie-Hellman (D-H) key size in bytes | `2048` | no |
+| vpn\_instance\_disk\_size | VPN main disk size | `50` | no |
+| vpn\_instance\_type | EC2 instance type | `"t3.micro"` | no |
+| vpn\_instances | number of VPN Servers (bastions) to create | `1` | no |
+| vpn\_operator\_cidrs | List of CIDRs allowed to log into the instance via SSH | ```[ "0.0.0.0/0" ]``` | no |
+| vpn\_operator\_name | VPN operator name. Used to log into the instance via SSH | `"sighup"` | no |
+| vpn\_port | OpenVPN Server listening port | `1194` | no |
+| vpn\_routes | VPN routes | `[]` | no |
+| vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example angelbarrera92 | `[]` | no |
+| vpn\_subnetwork\_cidr | CIDR used to assign VPN clients IP addresses, should be different from the network\_cidr | n/a | yes |
 
 ## Outputs
 
@@ -62,35 +62,38 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-west-1"
+}
+
 module "vpc" {
-    source = "../../modules/vpc"
+  source = "../../modules/vpc"
 
-    name = "fury"
-    network_cidr = "10.0.0.0/16"
-    tags = {
-      "environment" = "example"
-    }
+  name = "fury"
+  cidr = "10.0.0.0/16"
+  tags = {
+    "environment" = "example"
+  }
 
-    public_subnetwork_cidrs = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-    private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnetwork_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 
 module "vpn" {
-    source = "../../modules/vpn"
+  source = "../../modules/vpn"
 
-    count = 1
+  count = 1
 
-    name = "fury"
-    network_cidr = "10.0.0.0/16"
-    tags = {
-      "environment" = "example"
-    }
+  name = "fury"
+  tags = {
+    "environment" = "example"
+  }
 
-    vpc_id = module.vpc.vpc_id
-    public_subnets = module.vpc.public_subnets
+  vpc_id         = module.vpc.vpc_id
+  public_subnets = module.vpc.public_subnets
 
-    vpn_subnetwork_cidr = "192.168.200.0/24"
-    vpn_ssh_users = ["github-user"]
+  vpn_subnetwork_cidr = "192.168.200.0/24"
+  vpn_ssh_users       = ["github-user"]
 }
 ```
 

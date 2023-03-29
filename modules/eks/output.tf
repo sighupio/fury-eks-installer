@@ -1,3 +1,8 @@
+output "cluster_id" {
+  description = "The EKS cluster ID"
+  value = module.cluster.cluster_id
+}
+
 output "cluster_endpoint" {
   description = "The endpoint for your Kubernetes API server"
   value       = data.aws_eks_cluster.cluster.endpoint
@@ -45,5 +50,5 @@ output "eks_worker_security_group_id" {
 
 output "eks_worker_additional_security_group_id" {
   description = "Additional security group ID attached to EKS workers."
-  value       = aws_security_group.nodes.id
+  value       = aws_security_group.node_pool_shared.id
 }

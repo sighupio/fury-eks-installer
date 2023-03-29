@@ -22,6 +22,7 @@
 
 | Name | Description | Default | Required |
 |------|-------------|---------|:--------:|
+| availability\_zone\_names | A list of availability zones names in the region | `[]` | no |
 | cluster\_endpoint\_private\_access | Indicates whether or not the Amazon EKS private API server endpoint is enabled | `true` | no |
 | cluster\_endpoint\_private\_access\_cidrs | List of CIDR blocks which can access the Amazon EKS private API server endpoint | ```[ "0.0.0.0/0" ]``` | no |
 | cluster\_endpoint\_public\_access | Indicates whether or not the Amazon EKS public API server endpoint is enabled | `false` | no |
@@ -32,13 +33,13 @@
 | eks\_map\_accounts | Additional AWS account numbers to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_roles | Additional IAM roles to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_users | Additional IAM users to add to the aws-auth configmap | n/a | yes |
-| network | Network where the Kubernetes cluster will be hosted | n/a | yes |
 | node\_pools | An object list defining node pools configurations | `[]` | no |
 | node\_pools\_launch\_kind | Which kind of node pools to create. Valid values are: launch\_templates, launch\_configurations, both. | `"launch_templates"` | no |
-| resource\_group\_name | Resource group name where every resource will be placed. Required only in AKS installer (*) | `""` | no |
 | ssh\_public\_key | Cluster administrator public ssh key. Used to access cluster nodes with the operator\_ssh\_user | n/a | yes |
-| subnetworks | List of subnets where the cluster will be hosted | n/a | yes |
+| ssh\_to\_nodes\_allowed\_cidr\_blocks | List of CIDR blocks which can access via SSH the Amazon EKS nodes | `null` | no |
+| subnets | List of subnets where the cluster will be hosted | n/a | yes |
 | tags | The tags to apply to all resources | `{}` | no |
+| vpc\_id | VPC ID where the Kubernetes cluster will be hosted | n/a | yes |
 
 ## Outputs
 
@@ -46,6 +47,7 @@
 |------|-------------|
 | cluster\_certificate\_authority | The base64 encoded certificate data required to communicate with your cluster. Add this to the certificate-authority-data section of the kubeconfig file for your cluster |
 | cluster\_endpoint | The endpoint for your Kubernetes API server |
+| cluster\_id | The EKS cluster ID |
 | eks\_cluster\_oidc\_issuer\_url | The URL on the EKS cluster OIDC Issuer |
 | eks\_cluster\_oidc\_provider\_arn | The ARN of the OIDC Provider |
 | eks\_cluster\_primary\_security\_group\_id | The cluster primary security group ID created by the EKS cluster on 1.14 or later. Referred to as 'Cluster security group' in the EKS console. |
@@ -65,21 +67,25 @@ data "terraform_remote_state" "vpc_and_vpn" {
   }
 }
 
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 module "fury_example" {
   source = "../../modules/eks"
 
   cluster_name    = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
   cluster_version = "1.25"
 
-  network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
+  vpc_id      = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
   subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
 
-  ssh_public_key = var.ssh_public_key
-  cluster_endpoint_private_access_cidrs = ["10.0.0.0/16"]
+  ssh_public_key                        = tls_private_key.ssh.private_key_pem
+  cluster_endpoint_private_access_cidrs = data.terraform_remote_state.vpc_and_vpn.outputs.vpn_instances_private_ips_as_cidrs
 
-  node_pools = [
-    {
-      name : "m5-node-pool"
+  node_pools = {
+    m5-node-pool = {
       version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
@@ -87,19 +93,22 @@ module "fury_example" {
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
-      additional_firewall_rules : [
-        {
-          name : "Debug 1"
-          direction : "ingress"
-          cidr_block : "0.0.0.0/0"
-          protocol : "TCP"
-          ports : "80-80"
-          tags : {
-            "hello" : "tag",
-            "cluster-tags" : "my-value-OVERRIDE-1"
+      additional_firewall_rules : {
+        cidr_blocks = [
+          {
+            name : "Debug 1"
+            type : "ingress"
+            cidr_block : "0.0.0.0/0"
+            protocol : "TCP"
+            from_port : 80
+            to_port : 80
+            tags : {
+              "hello" : "tag",
+              "cluster-tags" : "my-value-OVERRIDE-1"
+            }
           }
-        }
-      ]
+        ]
+      }
       labels : {
         "node.kubernetes.io/role" : "app"
         "sighup.io/fury-release" : "v1.24.0"
@@ -109,8 +118,8 @@ module "fury_example" {
         "node-tags" : "exists"
       }
       # max_pods : null # To use default EKS setting set it to null or do not set it
-    },{
-      name : "m5-node-pool-spot"
+    }
+    m5-node-pool-spot : {
       version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
@@ -120,19 +129,22 @@ module "fury_example" {
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
-      additional_firewall_rules : [
-        {
-          name : "Debug 2"
-          direction : "ingress"
-          cidr_block : "0.0.0.0/0"
-          protocol : "TCP"
-          ports : "80-80"
-          tags : {
-            "hello" : "tag",
-            "cluster-tags" : "my-value-OVERRIDE-2"
+      additional_firewall_rules : {
+        cidr_blocks = [
+          {
+            name : "Debug 2"
+            type : "ingress"
+            cidr_block : "0.0.0.0/0"
+            protocol : "TCP"
+            from_port : 80
+            to_port : 80
+            tags : {
+              "hello" : "tag",
+              "cluster-tags" : "my-value-OVERRIDE-2"
+            }
           }
-        }
-      ]
+        ]
+      }
       labels : {
         "node.kubernetes.io/role" : "app"
         "sighup.io/fury-release" : "v1.24.0"
@@ -143,10 +155,10 @@ module "fury_example" {
       }
       # max_pods : null # To use default EKS setting set it to null or do not set it
     },
-  ]
+  }
 
   tags = {
-    Environment: "kfd-development"
+    Environment : "kfd-development"
   }
 
   eks_map_users    = []

@@ -86,23 +86,25 @@ module "fury_example" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
-      spot_instance: true
       volume_size : 100
       subnetworks : null
-      eks_target_group_arns : null
-      additional_firewall_rules : [
-        {
-          name : "Debug 1"
-          direction : "ingress"
-          cidr_block : "0.0.0.0/0"
-          protocol : "TCP"
-          ports : "80-80"
-          tags : {
-            "hello" : "tag",
-            "cluster-tags" : "my-value-OVERRIDE-1"
+      target_group_arns : null
+      additional_firewall_rules : {
+        cidr_blocks = [
+          {
+            name : "Debug 1"
+            type : "ingress"
+            cidr_blocks : ["0.0.0.0/0"]
+            protocol : "TCP"
+            from_port : 80
+            to_port: 80
+            tags : {
+                hello : "tag"
+                cluster-tags : "my-value-OVERRIDE-1"
+            }
           }
-        }
-      ]
+        ]
+      }
       labels : {
         "node.kubernetes.io/role" : "app"
         "sighup.io/fury-release" : "v1.24.0"
@@ -112,35 +114,37 @@ module "fury_example" {
         "node-tags" : "exists"
       }
       # max_pods : null # To use default EKS setting set it to null or do not set it
-    },{
+    },
+    {
       name : "m5-node-pool-spot"
-      version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
       spot_instance : true # optionally create spot instances
-      # os : "ami-0caf35bc73450c396" # optionally define a custom AMI
+      # ami_id : "ami-01eb5348cab8e4902" # optionally define a custom AMI
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null
-      additional_firewall_rules : [
-        {
-          name : "Debug 2"
-          direction : "ingress"
-          cidr_block : "0.0.0.0/0"
-          protocol : "TCP"
-          ports : "80-80"
-          tags : {
-            "hello" : "tag",
-            "cluster-tags" : "my-value-OVERRIDE-2"
+      additional_firewall_rules : {
+        cidr_blocks = [
+          {
+            name : "Debug 2"
+            type : "ingress"
+            cidr_blocks : ["0.0.0.0/0"]
+            protocol : "TCP"
+            from_port : 80
+            to_port: 80
+            tags : {
+              hello : "tag"
+              cluster-tags : "my-value-OVERRIDE-2"
+            }
           }
-        }
-      ]
+        ]
+      }
       labels : {
         "node.kubernetes.io/role" : "app"
         "sighup.io/fury-release" : "v1.24.0"
       }
-      taints : []
       tags : {
         "node-tags" : "exists"
       }

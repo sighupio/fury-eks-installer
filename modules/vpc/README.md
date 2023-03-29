@@ -71,7 +71,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../../modules/vpc"
+    source = "../../modules/vpc"
 
   name = "fury"
   cidr = "10.0.0.0/16"
@@ -84,14 +84,15 @@ module "vpc" {
 }
 
 module "vpn" {
-  source = "../../modules/vpn"
+    source = "../../modules/vpn"
 
-  count = 1
+    count = 1
 
-  name = "fury"
-  tags = {
-    "environment" = "example"
-  }
+    name = "fury"
+    network_cidr = "10.0.0.0/16"
+    tags = {
+      "environment" = "example"
+    }
 
   vpc_id         = module.vpc.vpc_id
   public_subnets = module.vpc.public_subnets

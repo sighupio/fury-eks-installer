@@ -62,7 +62,7 @@ variable "vpn_operator_name" {
 }
 
 variable "vpn_port" {
-  description = "VPN Server Port"
+  description = "OpenVPN Server listening port"
   type        = number
   default     = 1194
 }

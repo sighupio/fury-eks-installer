@@ -30,7 +30,7 @@ content: |-
   ## Usage
 
   ```hcl
-  {{ include "../../example/eks/main.tf" }}
+  {{ include "../../examples/eks/main.tf" }}
   ```
 
   <!-- </KFD-DOCS> -->

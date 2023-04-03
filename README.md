@@ -95,13 +95,9 @@ Please refer to each module documentation and the [example](example/) folder for
 <!-- </KFD-DOCS> -->
 <!-- <FOOTER> -->
 
-## Contributing
-
-Before contributing, please read first the [Contributing Guidelines](docs/CONTRIBUTING.md).
-
 ### Reporting Issues
 
-In case you experience any problem with the module, please [open a new issue](https://github.com/sighupio/fury-kubernetes-networking/issues/new/choose).
+In case you experience any problem with the module, please [open a new issue](https://github.com/sighupio/fury-eks-installer/issues/new).
 
 ## License
 

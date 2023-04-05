@@ -27,13 +27,14 @@ module "vpc" {
     "environment" = "example"
   }
 
-#  one_nat_gateway_per_az = true
-  single_nat_gateway     = true
+  #  one_nat_gateway_per_az = true
+  single_nat_gateway = true
 
   public_subnetwork_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   names_of_kubernetes_cluster_integrated_with_subnets = [
-    "fury-example"
+    "fury-private-example",
+    "fury-public-example"
   ]
 }

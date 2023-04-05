@@ -92,7 +92,7 @@ resource "aws_s3_bucket" "furyagent" {
 }
 
 resource "aws_iam_user" "furyagent" {
-  name = "${var.name}-bootstrap"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-bootstrap"
   path = "/"
 
   tags = var.tags
@@ -109,7 +109,8 @@ resource "aws_iam_policy_attachment" "furyagent" {
 }
 
 resource "aws_iam_policy" "furyagent" {
-  name = "${var.name}-bootstrap"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-bootstrap"
+  path = "/"
 
   policy = <<EOF
 {

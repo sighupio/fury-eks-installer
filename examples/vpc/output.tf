@@ -12,10 +12,7 @@ output "private_subnets" {
   value       = module.vpc.private_subnets
 }
 
-output "vpn_instances_private_ips" {
-  value = module.vpn.vpn_instances_private_ips
-}
 
-output "vpn_instances_private_ips_as_cidrs" {
-  value = [for ip in module.vpn.vpn_instances_private_ips: "${ip}/32"]
+output "nat_public_ips" {
+  value = module.vpc.nat_public_ips
 }

@@ -26,13 +26,12 @@ locals {
       instance_type = lookup(node_pool, "instance_type")
       key_name      = aws_key_pair.nodes.key_name
       kubelet_extra_args = format(
-        "%s%s%s",
-        lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : "",
+        "--node-labels %s%s%s",
         join(",",
           [
             for k, v in merge(
               {
-                " --node-labels sighup.io/cluster" = var.cluster_name
+                "sighup.io/cluster" = var.cluster_name
                 "sighup.io/node_pool"              = lookup(node_pool, "name")
                 "node.kubernetes.io/lifecycle" = coalesce(
                   lookup(node_pool, "spot_instance", null),
@@ -47,7 +46,8 @@ locals {
           lookup(
             node_pool, "taints", null
           ) != null ? node_pool["taints"] : []
-        ) > 0 ? " --register-with-taints ${join(",", lookup(node_pool, "taints"))}" : ""
+        ) > 0 ? " --register-with-taints ${join(",", lookup(node_pool, "taints"))}" : "",
+        lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : "",
       )
       public_ip        = false
       root_volume_size = lookup(node_pool, "volume_size")

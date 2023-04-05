@@ -1,3 +1,38 @@
+/**
+ * Copyright (c) 2017-present SIGHUP s.r.l All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */
+
+terraform {
+  required_version = ">=0.15.4"
+  required_providers {
+    local    = "2.0.0"
+    null     = "3.0.0"
+    aws      = "3.56.0"
+    external = "2.0.0"
+  }
+}
+
+provider "aws" {
+  region = "eu-west-1"
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.fury_example.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.fury_example.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.fury_example.token
+  load_config_file       = false
+}
+
+data "aws_eks_cluster" "fury_example" {
+name = module.fury_example.cluster_id
+}
+
+data "aws_eks_cluster_auth" "fury_example" {
+  name = module.fury_example.cluster_id
+}
+
 data "terraform_remote_state" "vpc" {
   backend = "local"
   config = {
@@ -14,23 +49,25 @@ data "terraform_remote_state" "vpn" {
 
 resource "tls_private_key" "ssh" {
   algorithm = "RSA"
-  rsa_bits  = 4096
+  rsa_bits  = 2048
 }
 
 module "fury_example" {
   source = "../../modules/eks"
 
-  cluster_name               = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
-  cluster_version            = "1.25"
+  cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
+  cluster_version            = "1.24"
   cluster_log_retention_days = 1
 
   availability_zone_names = ["eu-west-1a", "eu-west-1b"]
   subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
   vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
 
-  cluster_endpoint_private_access_cidrs = data.terraform_remote_state.vpn.outputs.vpn_instances_private_ips_as_cidrs
+  cluster_endpoint_public_access = true
 
-  ssh_public_key                        = tls_private_key.ssh.private_key_pem
+  cluster_endpoint_private_access_cidrs = [data.terraform_remote_state.vpc.outputs.vpc_cidr_block]
+
+  ssh_public_key = tls_private_key.ssh.public_key_openssh
 
   node_pools = [
     {

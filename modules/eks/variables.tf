@@ -201,3 +201,8 @@ variable "ssh_to_nodes_allowed_cidr_blocks" {
   default     = null
 }
 
+variable "cluster_service_ipv4_cidr" {
+  type        = string
+  description = "Kubernetes service ipV4 CIDR"
+  default     = "172.20.0.0/20"
+}

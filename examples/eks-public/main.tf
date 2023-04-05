@@ -19,18 +19,18 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.fury_example.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.fury_example.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.fury_example.token
+  host                   = data.aws_eks_cluster.fury_public_example.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.fury_public_example.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.fury_public_example.token
   load_config_file       = false
 }
 
-data "aws_eks_cluster" "fury_example" {
-  name = module.fury_example.cluster_id
+data "aws_eks_cluster" "fury_public_example" {
+  name = module.fury_public_example.cluster_id
 }
 
-data "aws_eks_cluster_auth" "fury_example" {
-  name = module.fury_example.cluster_id
+data "aws_eks_cluster_auth" "fury_public_example" {
+  name = module.fury_public_example.cluster_id
 }
 
 data "terraform_remote_state" "vpc" {
@@ -45,7 +45,7 @@ resource "tls_private_key" "ssh" {
   rsa_bits  = 2048
 }
 
-module "fury_example" {
+module "fury_public_example" {
   source = "../../modules/eks"
 
   cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module

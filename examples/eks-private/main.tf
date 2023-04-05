@@ -55,7 +55,7 @@ resource "tls_private_key" "ssh" {
 module "fury_example" {
   source = "../../modules/eks"
 
-  cluster_name               = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
+  cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
   cluster_version            = "1.25"
   cluster_log_retention_days = 1
 
@@ -70,13 +70,10 @@ module "fury_example" {
   node_pools = [
     {
       name : "m5-node-pool"
-      version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
       volume_size : 100
-      subnets : null
-      target_group_arns : null
       container_runtime = "containerd"
       additional_firewall_rules : {
         cidr_blocks = [
@@ -96,7 +93,7 @@ module "fury_example" {
       }
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.24.0"
+        "sighup.io/fury-release" : "v1.25.0"
       }
       taints : []
       tags : {
@@ -131,7 +128,7 @@ module "fury_example" {
       }
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.24.0"
+        "sighup.io/fury-release" : "v1.25.0"
       }
       tags : {
         "node-tags" : "exists"
@@ -144,6 +141,23 @@ module "fury_example" {
       max_size : 2
       instance_type : "m5.large"
       volume_size : 10
+    },
+    {
+      name : "m5-node-pool-null-config"
+      ami_id : null
+      version : null
+      min_size : 1
+      max_size : 2
+      instance_type : "m5.large"
+      container_runtime : null
+      spot_instance : null
+      max_pods: null
+      volume_size : 100
+      subnets: null
+      labels: null
+      taints: null
+      tags: null
+      additional_firewall_rules : null
     },
   ]
 

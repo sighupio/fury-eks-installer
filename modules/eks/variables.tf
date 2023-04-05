@@ -63,7 +63,7 @@ variable "node_pools" {
         cidr_blocks = optional(
           list(
             object({
-              name        = string
+              description = optional(string)
               type        = string
               cidr_blocks = list(string)
               protocol    = string
@@ -76,7 +76,7 @@ variable "node_pools" {
         source_security_group_id = optional(
           list(
             object({
-              name                     = string
+              description              = optional(string)
               type                     = string
               source_security_group_id = string
               protocol                 = string
@@ -89,13 +89,13 @@ variable "node_pools" {
         self = optional(
           list(
             object({
-              name      = string
-              type      = string
-              self      = bool
-              protocol  = string
-              from_port = number
-              to_port   = number
-              tags      = map(string)
+              description = optional(string)
+              type        = string
+              self        = bool
+              protocol    = string
+              from_port   = number
+              to_port     = number
+              tags        = map(string)
             })
           )
         )
@@ -200,3 +200,4 @@ variable "ssh_to_nodes_allowed_cidr_blocks" {
   type        = list(string)
   default     = null
 }
+

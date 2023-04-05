@@ -1,0 +1,2 @@
+# GitHub usernames from whom the node will pull the public keys to allow ssh connections.
+vpn_ssh_users = []

@@ -16,3 +16,11 @@ output "vpn_instances_private_ips" {
 output "vpn_instances_private_ips_as_cidrs" {
   value = [for instance in aws_instance.vpn : "${instance.private_ip}/32"]
 }
+
+output "aws_iam_user_arn" {
+  value = aws_iam_user.furyagent.arn
+}
+
+output "aws_iam_policy_arn" {
+  value = aws_iam_policy.furyagent.arn
+}

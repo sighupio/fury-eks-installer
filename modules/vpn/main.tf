@@ -79,7 +79,7 @@ resource "aws_eip" "vpn" {
 resource "aws_instance" "vpn" {
   count = var.vpn_instances
 
-  ami                    = lookup(local.ubuntu_amis, data.aws_region.current.name, "")
+  ami                    = data.aws_ami.ubuntu2004.image_id
   user_data              = templatefile("${path.module}/templates/vpn.yml", local.vpntemplate_vars)
   instance_type          = var.vpn_instance_type
   subnet_id              = element(var.public_subnets, count.index % length(var.public_subnets))

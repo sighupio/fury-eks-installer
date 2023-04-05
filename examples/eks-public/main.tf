@@ -148,12 +148,12 @@ module "fury_public_example" {
       instance_type : "m5.large"
       container_runtime : null
       spot_instance : null
-      max_pods: null
+      max_pods : null
       volume_size : 100
-      subnets: null
-      labels: null
-      taints: null
-      tags: null
+      subnets : null
+      labels : null
+      taints : null
+      tags : null
       additional_firewall_rules : null
     },
   ]

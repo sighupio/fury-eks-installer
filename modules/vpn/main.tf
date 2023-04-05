@@ -17,7 +17,7 @@ resource "aws_security_group_rule" "vpn" {
   from_port         = var.vpn_port
   to_port           = var.vpn_port
   protocol          = "udp"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = var.vpn_operator_cidrs
   security_group_id = aws_security_group.vpn.id
 }
 

@@ -1,3 +1,17 @@
+terraform {
+  required_version = ">= 0.15.4"
+  required_providers {
+    local    = "2.0.0"
+    null     = "3.0.0"
+    aws      = "3.56.0"
+    external = "2.0.0"
+  }
+}
+
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+
 locals {
   default_vpc_tags = {
     "kubernetes.io/cluster/${var.name}" = "shared"

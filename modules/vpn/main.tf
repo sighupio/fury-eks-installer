@@ -2,41 +2,12 @@ data "external" "os" {
   program = ["${path.module}/bin/os.sh"]
 }
 
-locals {
-  os              = data.external.os.result.os
-  local_furyagent = local.os == "Darwin" ? "${path.module}/bin/furyagent-darwin-amd64" : "${path.module}/bin/furyagent-linux-amd64"
-
-  vpntemplate_vars = {
-    openvpn_port           = var.vpn_port,
-    openvpn_subnet_network = cidrhost(var.vpn_subnetwork_cidr, 0),
-    openvpn_subnet_netmask = cidrnetmask(var.vpn_subnetwork_cidr),
-    openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
-    openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
-    openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.2.2"
-    furyagent              = indent(6, local_file.furyagent.content),
-  }
-
-  furyagent_vars = {
-    bucketName     = aws_s3_bucket.furyagent.bucket,
-    aws_access_key = aws_iam_access_key.furyagent.id,
-    aws_secret_key = aws_iam_access_key.furyagent.secret,
-    region         = data.aws_region.current.name,
-    servers        = [for serverIP in aws_eip.vpn.*.public_ip : "${serverIP}:${var.vpn_port}"]
-    user           = var.vpn_operator_name,
-  }
-  furyagent = templatefile("${path.module}/templates/furyagent.yml", local.furyagent_vars)
-  users     = var.vpn_ssh_users
-  sshkeys_vars = {
-    users = local.users
-  }
-  sshkeys = templatefile("${path.module}/templates/ssh-users.yml", local.sshkeys_vars)
-}
+data "aws_region" "current" {}
 
 //INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
   name_prefix = "${var.name}-"
   tags        = var.tags
 }
@@ -81,7 +52,7 @@ resource "aws_instance" "vpn" {
   ami                    = lookup(local.ubuntu_amis, data.aws_region.current.name, "")
   user_data              = templatefile("${path.module}/templates/vpn.yml", local.vpntemplate_vars)
   instance_type          = var.vpn_instance_type
-  subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
+  subnet_id              = element(var.public_subnets, count.index % length(var.public_subnets))
   vpc_security_group_ids = [aws_security_group.vpn.id]
   source_dest_check      = false
   root_block_device {

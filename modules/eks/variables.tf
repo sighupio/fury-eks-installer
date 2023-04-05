@@ -24,14 +24,6 @@ variable "subnetworks" {
   description = "List of subnets where the cluster will be hosted"
 }
 
-variable "dmz_cidr_range" {
-  description = "Network CIDR range from where cluster control plane will be accessible"
-}
-
-locals {
-  parsed_dmz_cidr_range = flatten([var.dmz_cidr_range])
-}
-
 variable "ssh_public_key" {
   type        = string
   description = "Cluster administrator public ssh key. Used to access cluster nodes with the operator_ssh_user"
@@ -84,12 +76,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "Resource group name where every resource will be placed. Required only in AKS installer (*)"
-  default     = ""
-}
-
 variable "eks_map_accounts" {
   description = "Additional AWS account numbers to add to the aws-auth configmap"
   type        = list(string)
@@ -137,4 +123,28 @@ variable "eks_map_users" {
   #     groups   = ["system:masters"]
   #   },
   # ]
+}
+
+variable "cluster_endpoint_private_access" {
+  description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_endpoint_private_access_cidrs" {
+  description = "List of CIDR blocks which can access the Amazon EKS private API server endpoint"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "cluster_endpoint_public_access" {
+  description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled"
+  type        = bool
+  default     = false
+}
+
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
 }

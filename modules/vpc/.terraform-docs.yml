@@ -15,7 +15,7 @@ sections:
 
 content: |-
 
-  # Fury EKS Installer - EKS module
+  # Fury EKS Installer - vpc module
 
   <!-- <KFD-DOCS> -->
 
@@ -30,7 +30,7 @@ content: |-
   ## Usage
 
   ```hcl
-  {{ include "../../examples/eks/main.tf" }}
+  {{ include "../../examples/vpc-and-vpn/main.tf" }}
   ```
 
   <!-- </KFD-DOCS> -->

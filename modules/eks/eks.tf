@@ -112,3 +112,8 @@ module "cluster" {
   worker_sg_ingress_from_port          = 22
   write_kubeconfig                     = false
 }
+
+resource "aws_iam_role_policy_attachment" "workers_AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = module.cluster.worker_iam_role_name
+}

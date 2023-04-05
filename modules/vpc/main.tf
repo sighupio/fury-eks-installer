@@ -38,8 +38,8 @@ module "vpc" {
       for cluster_name in var.names_of_kubernetes_cluster_integrated_with_subnets :
       "kubernetes.io/cluster/${cluster_name}" => "shared"
     },
-    { for cluster_name in var.names_of_kubernetes_cluster_integrated_with_subnets :
-      "kubernetes.io/role/elb" => "1"
+    {
+      "kubernetes.io/role/internal-elb" = "1"
     }
   )
 
@@ -49,8 +49,7 @@ module "vpc" {
       "kubernetes.io/cluster/${cluster_name}" => "shared"
     },
     {
-      for cluster_name in var.names_of_kubernetes_cluster_integrated_with_subnets :
-      "kubernetes.io/role/internal-elb" => "1"
+      "kubernetes.io/role/internal-elb" = "1"
     }
   )
 

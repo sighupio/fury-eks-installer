@@ -26,7 +26,7 @@ provider "kubernetes" {
 }
 
 data "aws_eks_cluster" "fury_example" {
-name = module.fury_example.cluster_id
+  name = module.fury_example.cluster_id
 }
 
 data "aws_eks_cluster_auth" "fury_example" {
@@ -40,13 +40,6 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-data "terraform_remote_state" "vpn" {
-  backend = "local"
-  config = {
-    path = "${path.module}/../vpn/terraform.tfstate"
-  }
-}
-
 resource "tls_private_key" "ssh" {
   algorithm = "RSA"
   rsa_bits  = 2048
@@ -56,16 +49,15 @@ module "fury_example" {
   source = "../../modules/eks"
 
   cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
-  cluster_version            = "1.24"
+  cluster_version            = "1.25"
   cluster_log_retention_days = 1
 
   availability_zone_names = ["eu-west-1a", "eu-west-1b"]
   subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
   vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
 
-  cluster_endpoint_public_access = true
-
-  cluster_endpoint_private_access_cidrs = [data.terraform_remote_state.vpc.outputs.vpc_cidr_block]
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = false
 
   ssh_public_key = tls_private_key.ssh.public_key_openssh
 
@@ -98,7 +90,7 @@ module "fury_example" {
       }
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.24.0"
+        "sighup.io/fury-release" : "v1.25.0"
       }
       taints : []
       tags : {
@@ -133,7 +125,7 @@ module "fury_example" {
       }
       labels : {
         "node.kubernetes.io/role" : "app"
-        "sighup.io/fury-release" : "v1.24.0"
+        "sighup.io/fury-release" : "v1.25.0"
       }
       tags : {
         "node-tags" : "exists"
@@ -146,6 +138,23 @@ module "fury_example" {
       max_size : 2
       instance_type : "m5.large"
       volume_size : 10
+    },
+    {
+      name : "m5-node-pool-null-config"
+      ami_id : null
+      version : null
+      min_size : 1
+      max_size : 2
+      instance_type : "m5.large"
+      container_runtime : null
+      spot_instance : null
+      max_pods: null
+      volume_size : 100
+      subnets: null
+      labels: null
+      taints: null
+      tags: null
+      additional_firewall_rules : null
     },
   ]
 

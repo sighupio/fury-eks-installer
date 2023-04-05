@@ -88,6 +88,7 @@ module "cluster" {
   cluster_endpoint_public_access       = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
+  cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
   cluster_log_retention_in_days = var.cluster_log_retention_days
   cluster_enabled_log_types     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]

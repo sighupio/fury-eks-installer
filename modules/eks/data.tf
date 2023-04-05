@@ -2,7 +2,7 @@ data "aws_subnet" "this" {
   for_each = toset(flatten(concat(
     var.subnets,
     flatten([
-      for node_pool in var.node_pools : lookup(node_pool, "subnets", null) != null ? node_pool["subnets"] : []
+      for node_pool in var.node_pools : coalesce(lookup(node_pool, "subnets", null), [])
     ])
   )))
   vpc_id = var.vpc_id

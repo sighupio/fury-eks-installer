@@ -6,17 +6,16 @@
 
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| terraform | ~> 0.15.4 |
-| aws | ~>3.56.0 |
-| kubernetes | ~>1.13.3 |
+| Name | Version  |
+|------|----------|
+| terraform | `>= 1.3.0` |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~>3.56.0 |
+| aws | `~>3.56.0` |
+| kubernetes | `~>1.13.4` |
 
 ## Inputs
 
@@ -61,10 +60,10 @@
 ## Usage
 
 ```hcl
-data "terraform_remote_state" "vpc_and_vpn" {
+data "terraform_remote_state" "vpc" {
   backend = "local"
   config = {
-    path = "${path.module}/../vpc-and-vpn/terraform.tfstate"
+    path = "${path.module}/../vpc/terraform.tfstate"
   }
 }
 
@@ -74,8 +73,8 @@ module "fury_example" {
   cluster_name    = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
   cluster_version = "1.24"
 
-  network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
-  subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
+  network     = data.terraform_remote_state.vpc.outputs.vpc_id
+  subnetworks = data.terraform_remote_state.vpc.outputs.private_subnets
 
   ssh_public_key = var.ssh_public_key
   cluster_endpoint_private_access_cidrs = ["10.0.0.0/16"]

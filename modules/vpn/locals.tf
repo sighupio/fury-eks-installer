@@ -1,30 +1,7 @@
-data "aws_ami" "ubuntu2004" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = [
-      "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
-    ]
-  }
-  filter {
-    name = "image-type"
-    values = [
-      "machine"
-    ]
-  }
-  filter {
-    name = "virtualization-type"
-    values = [
-      "hvm"
-    ]
-  }
-}
-
 locals {
   os              = data.external.os.result.os
-  local_furyagent = local.os == "Darwin" ? "${path.module}/bin/furyagent-darwin-amd64" : "${path.module}/bin/furyagent-linux-amd64"
+  arch            = data.external.os.result.arch
+  local_furyagent = "${path.module}/bin/furyagent-${lower(local.os)}-${lower(local.arch)}"
 
   vpc_cidr_block = data.aws_vpc.this.cidr_block
 

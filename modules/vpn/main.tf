@@ -1,37 +1,11 @@
-data "external" "os" {
-  program = ["${path.module}/bin/os.sh"]
-}
-
-locals {
-  os              = data.external.os.result.os
-  arch            = data.external.os.result.arch
-  local_furyagent = "${path.module}/bin/furyagent-${lower(local.os)}-${lower(local.arch)}"
-
-  vpntemplate_vars = {
-    openvpn_port           = var.vpn_port,
-    openvpn_subnet_network = cidrhost(var.vpn_subnetwork_cidr, 0),
-    openvpn_subnet_netmask = cidrnetmask(var.vpn_subnetwork_cidr),
-    openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
-    openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
-    openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.3.0"
-    furyagent              = indent(6, local_file.furyagent.content),
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    local    = "~>2.1.0"
+    null     = "~>3.1.1"
+    aws      = "3.56.0"
+    external = "~>2.1.1"
   }
-
-  furyagent_vars = {
-    bucketName     = aws_s3_bucket.furyagent.bucket,
-    aws_access_key = aws_iam_access_key.furyagent.id,
-    aws_secret_key = aws_iam_access_key.furyagent.secret,
-    region         = data.aws_region.current.name,
-    servers        = [for serverIP in aws_eip.vpn.*.public_ip : "${serverIP}:${var.vpn_port}"]
-    user           = var.vpn_operator_name,
-  }
-  furyagent = templatefile("${path.module}/templates/furyagent.yml", local.furyagent_vars)
-  users     = var.vpn_ssh_users
-  sshkeys_vars = {
-    users = local.users
-  }
-  sshkeys = templatefile("${path.module}/templates/ssh-users.yml", local.sshkeys_vars)
 }
 
 //INSTANCE RELATED STUFF

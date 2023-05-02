@@ -1,6 +1,5 @@
 terraform {
-  experiments      = [module_variable_optional_attrs]
-  required_version = "~> 0.15"
+  required_version = ">= 1.3.0"
   required_providers {
     aws        = "~> 3.56"
     kubernetes = "~> 1.13"

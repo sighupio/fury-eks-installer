@@ -1,10 +1,10 @@
 terraform {
   required_version = ">= 1.3.0"
   required_providers {
-    local    = "~> 2.0"
-    null     = "~> 3.0"
-    aws      = "~> 3.56"
-    external = "~> 2.0"
+    local    = "~> 2.1"
+    null     = "~> 3.1"
+    aws      = "~> 3.76"
+    external = "~> 2.1"
   }
 }
 

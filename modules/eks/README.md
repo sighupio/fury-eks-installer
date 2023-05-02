@@ -17,6 +17,7 @@
 | Name | Version |
 |------|---------|
 | aws | ~> 3.76 |
+| kubernetes | ~>1.13 |
 
 ## Inputs
 
@@ -87,9 +88,8 @@ module "fury_example" {
   cluster_version            = "1.25"
   cluster_log_retention_days = 1
 
-  availability_zone_names = ["eu-west-1a", "eu-west-1b"]
-  subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
-  vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
+  network     = data.terraform_remote_state.vpc.outputs.vpc_id
+  subnetworks = data.terraform_remote_state.vpc.outputs.private_subnets
 
   cluster_endpoint_private_access_cidrs = data.terraform_remote_state.vpn.outputs.vpn_instances_private_ips_as_cidrs
 

@@ -6,19 +6,18 @@
 
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| terraform | >= 0.15.4 |
-| aws | 3.56.0 |
-| external | 2.0.0 |
-| local | 2.0.0 |
-| null | 3.0.0 |
+| Name | Version   |
+|------|-----------|
+| terraform | `>= 1.3.0`  |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 3.56.0 |
+| aws | `3.56.0`    |
+| external | `~>2.1.1` |
+| local | `~>2.1.0` |
+| null | `3.1.1`   |
 
 ## Inputs
 
@@ -37,15 +36,16 @@
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| private\_subnets | List of IDs of private subnets |
+| Name                           | Description                             |
+|--------------------------------|-----------------------------------------|
+| nat\_public\_ips               | NAT Gateway public IPs                  |
+| private\_subnets               | List of IDs of private subnets          |
 | private\_subnets\_cidr\_blocks | List of cidr\_blocks of private subnets |
-| public\_subnets | List of IDs of public subnets |
-| public\_subnets\_cidr\_blocks | List of cidr\_blocks of public subnets |
-| vpc\_cidr\_block | The CIDR block of the VPC |
-| vpc\_id | The ID of the VPC |
-| vpc\_ipv4\_extra\_cidr\_blocks | The extra CIDR block of the VPC |
+| public\_subnets                | List of IDs of public subnets           |
+| public\_subnets\_cidr\_blocks  | List of cidr\_blocks of public subnets  |
+| vpc\_cidr\_block               | The CIDR block of the VPC               |
+| vpc\_id                        | The ID of the VPC                       |
+| vpc\_ipv4\_extra\_cidr\_blocks | The extra CIDR block of the VPC         |
 
 ## Usage
 
@@ -81,24 +81,6 @@ module "vpc" {
 
   public_subnetwork_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-}
-
-module "vpn" {
-    source = "../../modules/vpn"
-
-    count = 1
-
-    name = "fury"
-    network_cidr = "10.0.0.0/16"
-    tags = {
-      "environment" = "example"
-    }
-
-  vpc_id         = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnets
-
-  vpn_subnetwork_cidr = "192.168.200.0/24"
-  vpn_ssh_users       = ["github-user"]
 }
 ```
 

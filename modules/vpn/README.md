@@ -6,16 +6,18 @@
 
 ## Requirements
 
-No requirements.
+| Name | Version   |
+|------|-----------|
+| terraform | `>= 1.3.0`  |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| aws | n/a |
-| external | n/a |
-| local | n/a |
-| null | n/a |
+| Name | Version   |
+|------|-----------|
+| aws | `3.56.0`    |
+| external | `~>2.1.1` |
+| local | `~>2.1.0` |
+| null | `3.1.1`   |
 
 ## Inputs
 
@@ -38,10 +40,14 @@ No requirements.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| furyagent | furyagent.yml used by the VPN instance and ready to use to create a VPN profile |
-| vpn\_ip | VPN instance IP |
+| Name                                    | Description                                                                     |
+|-----------------------------------------|---------------------------------------------------------------------------------|
+| furyagent                               | furyagent.yml used by the VPN instance and ready to use to create a VPN profile |
+| vpn\_ip                                 | VPN instance public IPs                                                         |
+| vpn\_instances\_private\_ips            | VPN instance private IPs                                                        |
+| vpn\_instances\_private\_ips\_as\_cidrs | VPN instance private IPs as CIDR blocks                                         |
+| aws\_iam\_user\_arn                     | furyagent AWS IAM User ARN                                                      |
+| aws\_iam\_policy\_arn                   | furyagent AWS IAM Policy ARN                                                    |
 
 ## Usage
 
@@ -64,19 +70,6 @@ terraform {
 
 provider "aws" {
   region = "eu-west-1"
-}
-
-module "vpc" {
-  source = "../../modules/vpc"
-
-  name = "fury"
-  cidr = "10.0.0.0/16"
-  tags = {
-    "environment" = "example"
-  }
-
-  public_subnetwork_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 
 module "vpn" {

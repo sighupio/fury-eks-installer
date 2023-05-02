@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "{\"os\": \"$(uname)\"}"
+echo "{\"os\": \"$(uname)\", \"arch\": \"$(uname -m)\"}"

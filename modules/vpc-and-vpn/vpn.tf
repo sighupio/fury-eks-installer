@@ -4,7 +4,8 @@ data "external" "os" {
 
 locals {
   os              = data.external.os.result.os
-  local_furyagent = local.os == "Darwin" ? "${path.module}/bin/furyagent-darwin-amd64" : "${path.module}/bin/furyagent-linux-amd64"
+  arch            = data.external.os.result.arch
+  local_furyagent = "${path.module}/bin/furyagent-${lower(local.os)}-${lower(local.arch)}"
 
   vpntemplate_vars = {
     openvpn_port           = var.vpn_port,
@@ -13,7 +14,7 @@ locals {
     openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
     openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
     openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.2.2"
+    furyagent_version      = "v0.3.0"
     furyagent              = indent(6, local_file.furyagent.content),
   }
 

@@ -53,12 +53,12 @@ No requirements.
  */
 
 terraform {
-  required_version = ">=0.15.4"
+  required_version = "~> 0.15"
   required_providers {
-    local    = "2.0.0"
-    null     = "3.0.0"
-    aws      = "3.56.0"
-    external = "2.0.0"
+    local    = "~> 2.0.0"
+    null     = "~> 3.0.0"
+    aws      = "~> 3.56.0"
+    external = "~> 2.0.0"
   }
 }
 

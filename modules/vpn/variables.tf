@@ -81,3 +81,9 @@ variable "vpn_subnetwork_cidr" {
   description = "CIDR used to assign VPN clients IP addresses, should be different from the network_cidr"
   type        = string
 }
+
+variable "vpn_bucket_name_prefix" {
+  type        = string
+  description = "Bucket name prefix for VPN configuration files"
+  default     = ""
+}

@@ -5,7 +5,7 @@
  */
 
 terraform {
-  required_version = "~> 0.15.4"
+  required_version = "~> 0.15"
   required_providers {
     aws      = "~> 3.56.0"
     external = "~> 2.0.0"

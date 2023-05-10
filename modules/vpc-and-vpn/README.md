@@ -9,19 +9,19 @@
 | Name | Version |
 |------|---------|
 | terraform | >= 1.3 |
-| aws | ~> 3.56 |
-| external | ~> 2.1 |
-| local | ~> 2.1 |
-| null | ~> 3.1 |
+| aws | ~> 3.76 |
+| external | ~> 2.3 |
+| local | ~> 2.4 |
+| null | ~> 3.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 3.56 |
-| external | ~> 2.1 |
-| local | ~> 2.1 |
-| null | ~> 3.1 |
+| aws | ~> 3.76 |
+| external | ~> 2.3 |
+| local | ~> 2.4 |
+| null | ~> 3.2 |
 
 ## Inputs
 

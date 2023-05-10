@@ -8,15 +8,15 @@
 
 | Name | Version |
 |------|---------|
-| terraform | `>= 1.3.0` |
+| terraform | >= 1.3 |
+| aws | ~> 3.56 |
+| kubernetes | ~> 1.13 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | `3.56.0` |
-| kubernetes | `~>1.13.4` |
-
+| aws | ~> 3.56 |
 
 ## Inputs
 

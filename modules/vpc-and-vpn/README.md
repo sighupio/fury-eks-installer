@@ -8,16 +8,20 @@
 
 | Name | Version |
 |------|---------|
-| terraform | `>= 1.3.0` |
+| terraform | >= 1.3 |
+| aws | ~> 3.56 |
+| external | ~> 2.1 |
+| local | ~> 2.1 |
+| null | ~> 3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | `3.56.0` |
-| external | `~>2.1.1` |
-| local | `~>2.1.0` |
-| null | `~>3.1.1` |
+| aws | ~> 3.56 |
+| external | ~> 2.1 |
+| local | ~> 2.1 |
+| null | ~> 3.1 |
 
 ## Inputs
 

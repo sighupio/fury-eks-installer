@@ -9,7 +9,7 @@ module "fury_example" {
   source = "../../modules/eks"
 
   cluster_name    = "fury-example"  # make sure to use the same name you used in the VPC and VPN module
-  cluster_version = "1.24"
+  cluster_version = "1.25"
 
   network     = data.terraform_remote_state.vpc_and_vpn.outputs.vpc_id
   subnetworks = data.terraform_remote_state.vpc_and_vpn.outputs.private_subnets
@@ -24,7 +24,6 @@ module "fury_example" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
-      spot_instance: true
       volume_size : 100
       subnetworks : null
       eks_target_group_arns : null

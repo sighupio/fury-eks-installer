@@ -6,16 +6,22 @@
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 1.3 |
+| aws | ~> 3.76 |
+| external | ~> 2.3 |
+| local | ~> 2.4 |
+| null | ~> 3.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
-| external | n/a |
-| local | n/a |
-| null | n/a |
+| aws | ~> 3.76 |
+| external | ~> 2.3 |
+| local | ~> 2.4 |
+| null | ~> 3.2 |
 
 ## Inputs
 
@@ -32,7 +38,7 @@ No requirements.
 | vpn\_operator\_cidrs | List of CIDRs allowed to log into the instance via SSH | ```[ "0.0.0.0/0" ]``` | no |
 | vpn\_operator\_name | VPN operator name. Used to log into the instance via SSH | `"sighup"` | no |
 | vpn\_port | OpenVPN Server listening port | `1194` | no |
-| vpn\_routes | VPN routes | `[]` | no |
+| vpn\_routes | VPN routes | `null` | no |
 | vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example angelbarrera92 | `[]` | no |
 | vpn\_subnetwork\_cidr | CIDR used to assign VPN clients IP addresses, should be different from the network\_cidr | n/a | yes |
 
@@ -40,7 +46,11 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
+| aws\_iam\_policy\_arn | n/a |
+| aws\_iam\_user\_arn | n/a |
 | furyagent | furyagent.yml used by the VPN instance and ready to use to create a VPN profile |
+| vpn\_instances\_private\_ips | n/a |
+| vpn\_instances\_private\_ips\_as\_cidrs | n/a |
 | vpn\_ip | VPN instance IP |
 
 ## Usage
@@ -53,12 +63,12 @@ No requirements.
  */
 
 terraform {
-  required_version = "~> 0.15"
+  required_version = "~> 1.4"
   required_providers {
-    local    = "~> 2.0.0"
-    null     = "~> 3.0.0"
-    aws      = "~> 3.56.0"
-    external = "~> 2.0.0"
+    local    = "~> 2.4.0"
+    null     = "~> 3.2.1"
+    aws      = "~> 3.76.1"
+    external = "~> 2.3.1"
   }
 }
 
@@ -66,31 +76,23 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-module "vpc" {
-  source = "../../modules/vpc"
-
-  name = "fury"
-  cidr = "10.0.0.0/16"
-  tags = {
-    "environment" = "example"
+data "terraform_remote_state" "vpc" {
+  backend = "local"
+  config = {
+    path = "${path.root}/../vpc/terraform.tfstate"
   }
-
-  public_subnetwork_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  private_subnetwork_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 
 module "vpn" {
   source = "../../modules/vpn"
 
-  count = 1
-
   name = "fury"
   tags = {
     "environment" = "example"
   }
 
-  vpc_id         = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnets
+  vpc_id         = data.terraform_remote_state.vpc.outputs.vpc_id
+  public_subnets = data.terraform_remote_state.vpc.outputs.public_subnets
 
   vpn_subnetwork_cidr = "192.168.200.0/24"
   vpn_ssh_users       = ["github-user"]

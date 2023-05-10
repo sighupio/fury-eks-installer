@@ -1,8 +1,12 @@
-data "external" "os" {
-  program = ["${path.module}/bin/os.sh"]
+terraform {
+  required_version = ">= 1.3"
+  required_providers {
+    local    = "~> 2.4"
+    null     = "~> 3.2"
+    aws      = "~> 3.76"
+    external = "~> 2.3"
+  }
 }
-
-data "aws_region" "current" {}
 
 //INSTANCE RELATED STUFF
 

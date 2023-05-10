@@ -5,12 +5,12 @@
  */
 
 terraform {
-  required_version = "~> 0.15"
+  required_version = "~> 1.4"
   required_providers {
-    aws      = "~> 3.56.0"
-    external = "~> 2.0.0"
-    local    = "~> 2.0.0"
-    null     = "~> 3.0.0"
+    local    = "~> 2.4.0"
+    null     = "~> 3.2.1"
+    aws      = "~> 3.76.1"
+    external = "~> 2.3.1"
   }
 }
 
@@ -37,5 +37,5 @@ module "vpn" {
   public_subnets = data.terraform_remote_state.vpc.outputs.public_subnets
 
   vpn_subnetwork_cidr = "192.168.200.0/24"
-  vpn_ssh_users       = ["github-user"]
+  vpn_ssh_users       = var.vpn_ssh_users
 }

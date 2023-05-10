@@ -37,5 +37,5 @@ module "vpn" {
   public_subnets = data.terraform_remote_state.vpc.outputs.public_subnets
 
   vpn_subnetwork_cidr = "192.168.200.0/24"
-  vpn_ssh_users       = ["github-user"]
+  vpn_ssh_users       = var.vpn_ssh_users
 }

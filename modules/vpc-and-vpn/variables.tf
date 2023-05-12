@@ -72,6 +72,6 @@ variable "vpn_operator_cidrs" {
 }
 
 variable "vpn_ssh_users" {
-  description = "GitHub users id to sync public rsa keys. Example angelbarrera92"
+  description = "GitHub users id to sync public rsa keys. Example jnardiello"
   type        = list(string)
 }

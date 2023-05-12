@@ -24,7 +24,7 @@
 |------|-------------|---------|:--------:|
 | cluster\_log\_retention\_days | Kubernetes Cluster log retention in days. Defaults to 90 days. | `90` | no |
 | cluster\_name | Unique cluster name. Used in multiple resources to identify your cluster resources | n/a | yes |
-| cluster\_version | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9 | n/a | yes |
+| cluster\_version | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.25, GKE example -> 1.25.7-gke.1000 | n/a | yes |
 | dmz\_cidr\_range | Network CIDR range from where cluster control plane will be accessible | n/a | yes |
 | eks\_map\_accounts | Additional AWS account numbers to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_roles | Additional IAM roles to add to the aws-auth configmap | n/a | yes |

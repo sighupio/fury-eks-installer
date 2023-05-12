@@ -63,7 +63,7 @@ To create the cluster via the installers:
 
 4. Use the [EKS module][eks-module] to deploy the EKS cluster
 
-Please refer to each module documentation and the [example](example/) folder for more details.
+Please refer to each module documentation and the [examples](examples/) folder for more details.
 
 > You can follow the [Fury on EKS quick start guide][fury-eks-quickstart] for a more detailed walkthrough
 

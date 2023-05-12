@@ -39,7 +39,7 @@
 | vpn\_operator\_cidrs | VPN Operator cidrs. Used to log into the instance via SSH | ```[ "0.0.0.0/0" ]``` | no |
 | vpn\_operator\_name | VPN operator name. Used to log into the instance via SSH | `"sighup"` | no |
 | vpn\_port | VPN Server Port | `1194` | no |
-| vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example angelbarrera92 | n/a | yes |
+| vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example jnardiello | n/a | yes |
 | vpn\_subnetwork\_cidr | VPN Subnet CIDR, should be different from the network\_cidr | n/a | yes |
 
 ## Outputs

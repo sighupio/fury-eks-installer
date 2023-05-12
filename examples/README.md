@@ -13,7 +13,7 @@ export AWS_SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
 export AWS_REGION=<YOUR_REGION>
 
 # Bring up the vpc and vpn
-cd example/vpc-and-vpn
+cd examples/vpc-and-vpn
 cp main.auto.tfvars.dist main.auto.tfvars
 # TASK: fill in main.auto.tfvars with your data
 terraform init

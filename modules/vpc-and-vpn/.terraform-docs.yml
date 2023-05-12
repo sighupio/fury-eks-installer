@@ -23,14 +23,14 @@ content: |-
 
   {{ .Providers }}
 
-  {{ .Inputs }}  
+  {{ .Inputs }}
 
   {{ .Outputs }}
 
   ## Usage
 
   ```hcl
-  {{ include "../../example/vpc-and-vpn/main.tf" }}
+  {{ include "../../examples/vpc-and-vpn/main.tf" }}
   ```
 
   <!-- </KFD-DOCS> -->

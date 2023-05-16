@@ -75,7 +75,7 @@ resource "aws_eip_association" "vpn" {
 
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
-  bucket_prefix = "${var.name}-vpn-bucket-"
+  bucket_prefix = "${var.name}-bootstrap-bucket-"
   acl           = "private"
 
   force_destroy = true
@@ -96,7 +96,7 @@ resource "aws_s3_bucket" "furyagent" {
 }
 
 resource "aws_iam_user" "furyagent" {
-  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-bootstrap"
   path = "/"
 
   tags = var.tags
@@ -107,13 +107,13 @@ resource "aws_iam_access_key" "furyagent" {
 }
 
 resource "aws_iam_policy_attachment" "furyagent" {
-  name       = "${var.name}-vpn"
+  name       = "${var.name}-bootstrap"
   users      = [aws_iam_user.furyagent.name]
   policy_arn = aws_iam_policy.furyagent.arn
 }
 
 resource "aws_iam_policy" "furyagent" {
-  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-bootstrap"
   path = "/"
 
   policy = <<EOF

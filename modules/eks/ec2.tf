@@ -166,6 +166,6 @@ resource "aws_security_group_rule" "ssh_to_nodes" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = var.ssh_to_nodes_allowed_cidr_blocks != null ? var.ssh_to_nodes_allowed_cidr_blocks : var.cluster_endpoint_private_access_cidrs
+  cidr_blocks       = length(var.ssh_to_nodes_allowed_cidr_blocks != null ? var.ssh_to_nodes_allowed_cidr_blocks : []) == 0 ? var.cluster_endpoint_private_access_cidrs : var.ssh_to_nodes_allowed_cidr_blocks
   security_group_id = aws_security_group.node_pool_shared.id
 }

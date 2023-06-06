@@ -75,7 +75,7 @@ resource "aws_eip_association" "vpn" {
 
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
-  bucket_prefix = coalesce(var.vpn_bucket_name_prefix, "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn")
+  bucket_prefix = coalesce(var.vpn_bucket_name_prefix, "${var.name}-vpn-bucket-")
   acl           = "private"
 
   force_destroy = true

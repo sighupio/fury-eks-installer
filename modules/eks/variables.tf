@@ -1,8 +1,4 @@
-variable "availability_zone_names" {
-  description = "A list of availability zones names in the region"
-  type        = list(string)
-  default     = []
-}
+# AWS EKS module variables
 
 variable "cluster_name" {
   type        = string
@@ -195,14 +191,22 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "cluster_service_ipv4_cidr" {
+  type        = string
+  description = "The CIDR block to assign Kubernetes service IP addresses from"
+  default     = null
+}
+
+# Other variables
+
+variable "availability_zone_names" {
+  description = "A list of availability zones names in the region"
+  type        = list(string)
+  default     = []
+}
+
 variable "ssh_to_nodes_allowed_cidr_blocks" {
   description = "List of CIDR blocks which can access via SSH the Amazon EKS nodes"
   type        = list(string)
   default     = null
-}
-
-variable "cluster_service_ipv4_cidr" {
-  type        = string
-  description = "Kubernetes service ipV4 CIDR"
-  default     = "172.20.0.0/20"
 }

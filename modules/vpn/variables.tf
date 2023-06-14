@@ -62,15 +62,6 @@ variable "vpn_port" {
   default     = 1194
 }
 
-variable "vpn_routes" {
-  description = "VPN routes"
-  type = list(object({
-    network = string
-    netmask = string
-  }))
-  default = null
-}
-
 variable "vpn_ssh_users" {
   description = "GitHub users id to sync public rsa keys. Example jnardiello"
   type        = list(string)
@@ -80,4 +71,13 @@ variable "vpn_ssh_users" {
 variable "vpn_subnetwork_cidr" {
   description = "CIDR used to assign VPN clients IP addresses, should be different from the network_cidr"
   type        = string
+}
+
+variable "vpn_routes" {
+  description = "VPN routes"
+  type = list(object({
+    network = string
+    netmask = string
+  }))
+  default = null
 }

@@ -29,7 +29,7 @@
 | cluster\_endpoint\_public\_access\_cidrs | List of CIDR blocks which can access the Amazon EKS public API server endpoint | ```[ "0.0.0.0/0" ]``` | no |
 | cluster\_log\_retention\_days | Kubernetes Cluster log retention in days. Defaults to 90 days. | `90` | no |
 | cluster\_name | Unique cluster name. Used in multiple resources to identify your cluster resources | n/a | yes |
-| cluster\_service\_ipv4\_cidr | Kubernetes service ipV4 CIDR | `"172.20.0.0/20"` | no |
+| cluster\_service\_ipv4\_cidr | The CIDR block to assign Kubernetes service IP addresses from | `null` | no |
 | cluster\_version | Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.25, GKE example -> 1.25.7-gke.1000 | n/a | yes |
 | eks\_map\_accounts | Additional AWS account numbers to add to the aws-auth configmap | n/a | yes |
 | eks\_map\_roles | Additional IAM roles to add to the aws-auth configmap | n/a | yes |

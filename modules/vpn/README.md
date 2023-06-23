@@ -39,7 +39,7 @@
 | vpn\_operator\_name | VPN operator name. Used to log into the instance via SSH | `"sighup"` | no |
 | vpn\_port | OpenVPN Server listening port | `1194` | no |
 | vpn\_routes | VPN routes | `null` | no |
-| vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example angelbarrera92 | `[]` | no |
+| vpn\_ssh\_users | GitHub users id to sync public rsa keys. Example jnardiello | `[]` | no |
 | vpn\_subnetwork\_cidr | CIDR used to assign VPN clients IP addresses, should be different from the network\_cidr | n/a | yes |
 
 ## Outputs
@@ -95,7 +95,7 @@ module "vpn" {
   public_subnets = data.terraform_remote_state.vpc.outputs.public_subnets
 
   vpn_subnetwork_cidr = "192.168.200.0/24"
-  vpn_ssh_users       = ["github-user"]
+  vpn_ssh_users       = var.vpn_ssh_users
 }
 ```
 

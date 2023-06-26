@@ -15,7 +15,7 @@ sections:
 
 content: |-
 
-  # Fury EKS Installer - EKS module
+  # Fury EKS Installer - vpc module
 
   <!-- <KFD-DOCS> -->
 
@@ -29,14 +29,8 @@ content: |-
 
   ## Usage
 
-  For clusters with private API server:
   ```hcl
-  {{ include "../../examples/eks-private/main.tf" }}
-  ```
-
-  For clusters with public API server:
-  ```hcl
-  {{ include "../../examples/eks-public/main.tf" }}
+  {{ include "../../examples/vpc/main.tf" }}
   ```
 
   <!-- </KFD-DOCS> -->

@@ -1,43 +1,17 @@
-data "external" "os" {
-  program = ["${path.module}/bin/os.sh"]
-}
-
-locals {
-  os              = data.external.os.result.os
-  arch            = data.external.os.result.arch
-  local_furyagent = "${path.module}/bin/furyagent-${lower(local.os)}-${lower(local.arch)}"
-
-  vpntemplate_vars = {
-    openvpn_port           = var.vpn_port,
-    openvpn_subnet_network = cidrhost(var.vpn_subnetwork_cidr, 0),
-    openvpn_subnet_netmask = cidrnetmask(var.vpn_subnetwork_cidr),
-    openvpn_routes         = [{ "network" : cidrhost(var.network_cidr, 0), "netmask" : cidrnetmask(var.network_cidr) }],
-    openvpn_dns_servers    = [cidrhost(var.network_cidr, 2)], # The second ip is the DNS in AWS
-    openvpn_dhparam_bits   = var.vpn_dhparams_bits,
-    furyagent_version      = "v0.3.0"
-    furyagent              = indent(6, local_file.furyagent.content),
+terraform {
+  required_version = ">= 1.3"
+  required_providers {
+    local    = "~> 2.4"
+    null     = "~> 3.2"
+    aws      = "~> 3.76"
+    external = "~> 2.3"
   }
-
-  furyagent_vars = {
-    bucketName     = aws_s3_bucket.furyagent.bucket,
-    aws_access_key = aws_iam_access_key.furyagent.id,
-    aws_secret_key = aws_iam_access_key.furyagent.secret,
-    region         = data.aws_region.current.name,
-    servers        = [for serverIP in aws_eip.vpn.*.public_ip : "${serverIP}:${var.vpn_port}"]
-    user           = var.vpn_operator_name,
-  }
-  furyagent = templatefile("${path.module}/templates/furyagent.yml", local.furyagent_vars)
-  users     = var.vpn_ssh_users
-  sshkeys_vars = {
-    users = local.users
-  }
-  sshkeys = templatefile("${path.module}/templates/ssh-users.yml", local.sshkeys_vars)
 }
 
 //INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = data.aws_vpc.this.id
   name_prefix = "${var.name}-"
   tags        = var.tags
 }
@@ -47,7 +21,7 @@ resource "aws_security_group_rule" "vpn" {
   from_port         = var.vpn_port
   to_port           = var.vpn_port
   protocol          = "udp"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = var.vpn_operator_cidrs
   security_group_id = aws_security_group.vpn.id
 }
 
@@ -79,10 +53,10 @@ resource "aws_eip" "vpn" {
 resource "aws_instance" "vpn" {
   count = var.vpn_instances
 
-  ami                    = lookup(local.ubuntu_amis, data.aws_region.current.name, "")
+  ami                    = data.aws_ami.ubuntu2004.image_id
   user_data              = templatefile("${path.module}/templates/vpn.yml", local.vpntemplate_vars)
   instance_type          = var.vpn_instance_type
-  subnet_id              = element(module.vpc.public_subnets, count.index % length(module.vpc.public_subnets))
+  subnet_id              = element(var.public_subnets, count.index % length(var.public_subnets))
   vpc_security_group_ids = [aws_security_group.vpn.id]
   source_dest_check      = false
   root_block_device {
@@ -101,7 +75,7 @@ resource "aws_eip_association" "vpn" {
 
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
-  bucket_prefix = "${var.name}-bootstrap-bucket-"
+  bucket_prefix = "${var.name}-vpn-bucket-"
   acl           = "private"
 
   force_destroy = true
@@ -122,7 +96,7 @@ resource "aws_s3_bucket" "furyagent" {
 }
 
 resource "aws_iam_user" "furyagent" {
-  name = "${var.name}-bootstrap"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
   path = "/"
 
   tags = var.tags
@@ -133,13 +107,14 @@ resource "aws_iam_access_key" "furyagent" {
 }
 
 resource "aws_iam_policy_attachment" "furyagent" {
-  name       = "${var.name}-bootstrap"
+  name       = "${var.name}-vpn"
   users      = [aws_iam_user.furyagent.name]
   policy_arn = aws_iam_policy.furyagent.arn
 }
 
 resource "aws_iam_policy" "furyagent" {
-  name = "${var.name}-bootstrap"
+  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  path = "/"
 
   policy = <<EOF
 {

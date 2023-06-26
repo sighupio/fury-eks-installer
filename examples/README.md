@@ -12,8 +12,14 @@ export AWS_ACCESS_KEY_ID=<YOUR_ACCESS_KEY_ID>
 export AWS_SECRET_ACCESS_KEY=<SECRET_ACCESS_KEY>
 export AWS_REGION=<YOUR_REGION>
 
-# Bring up the vpc and vpn
-cd examples/vpc-and-vpn
+# Bring up the vpc
+cd examples/vpc
+
+terraform init
+terraform apply
+
+# Bring up the vpn
+cd examples/vpn
 cp main.auto.tfvars.dist main.auto.tfvars
 # TASK: fill in main.auto.tfvars with your data
 terraform init
@@ -23,7 +29,7 @@ terraform apply
 furyagent configure openvpn-client --config=./secrets/furyagent.yml --client-name test > /tmp/fury-example-test.ovpn
 # TASK: import the generated /tmp/fury-example-test.ovpn in the openvpn client of your choice and turn it on.
 
-cd ../eks
+cd ../eks-private
 cp main.auto.tfvars.dist main.auto.tfvars
 # TASK: fill in main.auto.tfvars with your data
 terraform init

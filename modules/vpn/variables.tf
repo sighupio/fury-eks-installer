@@ -81,3 +81,9 @@ variable "vpn_routes" {
   }))
   default = null
 }
+
+variable "vpn_bucket_name_prefix" {
+  type        = string
+  description = "Bucket name prefix for VPN configuration files"
+  default     = ""
+}

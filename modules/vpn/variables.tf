@@ -63,7 +63,7 @@ variable "vpn_port" {
 }
 
 variable "vpn_ssh_users" {
-  description = "GitHub users id to sync public rsa keys. Example angelbarrera92"
+  description = "GitHub users id to sync public rsa keys. Example jnardiello"
   type        = list(string)
   default     = []
 }
@@ -80,4 +80,10 @@ variable "vpn_routes" {
     netmask = string
   }))
   default = null
+}
+
+variable "vpn_bucket_name_prefix" {
+  type        = string
+  description = "Bucket name prefix for VPN configuration files"
+  default     = ""
 }

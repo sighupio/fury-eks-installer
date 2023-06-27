@@ -8,11 +8,11 @@
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.3 |
+| terraform | ~> 1.3  |
 | aws | ~> 3.76 |
-| external | ~> 2.3 |
-| local | ~> 2.4 |
-| null | ~> 3.2 |
+| external | ~> 2.3  |
+| local | ~> 2.4  |
+| null | ~> 3.2  |
 
 ## Providers
 

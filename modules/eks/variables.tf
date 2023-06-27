@@ -7,7 +7,7 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   type        = string
-  description = "Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.16, GKE example -> 1.16.8-gke.9"
+  description = "Kubernetes Cluster Version. Look at the cloud providers documentation to discover available versions. EKS example -> 1.25, GKE example -> 1.25.7-gke.1000"
 }
 
 variable "cluster_log_retention_days" {
@@ -210,4 +210,3 @@ variable "ssh_to_nodes_allowed_cidr_blocks" {
   type        = list(string)
   default     = null
 }
-

@@ -8,7 +8,7 @@
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.3 |
+| terraform | ~> 1.3 |
 | aws | ~> 3.76 |
 | kubernetes | ~> 1.13 |
 

@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.3"
+  required_version = "~> 1.3"
   required_providers {
     local    = "~> 2.4"
     null     = "~> 3.2"
@@ -75,7 +75,7 @@ resource "aws_eip_association" "vpn" {
 
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
-  bucket_prefix = "${var.name}-vpn-bucket-"
+  bucket_prefix = coalesce(var.vpn_bucket_name_prefix, "${var.name}-vpn-bucket-")
   acl           = "private"
 
   force_destroy = true

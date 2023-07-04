@@ -14,7 +14,9 @@ locals {
       "min_size" : worker.min_size,
       "max_size" : worker.max_size,
       // we make the double of the current given spot_price to avoid any price volatily.
-      "spot_instance_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2 : "",
+      "spot_instance_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) : "",
+      "spot_instance_max_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2: "",
+      "capacity_type" : coalesce(worker.spot_instance, false) ? "SPOT" : null,
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
@@ -42,12 +44,14 @@ EOT
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false
       spot_price                    = lookup(node_pool, "spot_instance_price")
+      spot_max_price                = lookup(node_pool, "spot_instance_max_price")
       subnets                       = lookup(node_pool, "subnetworks")
       additional_security_group_ids = [aws_security_group.nodes.id, lookup(node_pool, "security_group_id")]
       cpu_credits                   = "unlimited" # Avoid t2/t3 throttling
       kubelet_extra_args            = replace(trimsuffix(chomp(lookup(node_pool, "kubelet_extra_args")), ","), "\n", " ")
       tags                          = lookup(node_pool, "tags")
       bootstrap_extra_args          = lookup(node_pool, "bootstrap_extra_args")
+      market_type                   = lookup(node_pool, "capacity_type") == "SPOT" ? "spot" : null
     }
   ]
 }

@@ -15,7 +15,7 @@ locals {
       "max_size" : worker.max_size,
       // we make the double of the current given spot_price to avoid any price volatily.
       "spot_instance_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) : "",
-      "spot_instance_max_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2: "",
+      "spot_instance_max_price" : worker.spot_instance ? element(data.aws_ec2_spot_price.current.*.spot_price, index(var.node_pools.*.name, worker.name)) * 2 : "",
       "capacity_type" : coalesce(worker.spot_instance, false) ? "SPOT" : null,
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
@@ -52,6 +52,7 @@ EOT
       tags                          = lookup(node_pool, "tags")
       bootstrap_extra_args          = lookup(node_pool, "bootstrap_extra_args")
       market_type                   = lookup(node_pool, "capacity_type") == "SPOT" ? "spot" : null
+      update_default_version        = true
     }
   ]
 }

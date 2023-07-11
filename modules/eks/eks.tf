@@ -31,8 +31,8 @@ locals {
           [
             for k, v in merge(
               {
-                "sighup.io/cluster" = var.cluster_name
-                "sighup.io/node_pool"              = lookup(node_pool, "name")
+                "sighup.io/cluster"   = var.cluster_name
+                "sighup.io/node_pool" = lookup(node_pool, "name")
                 "node.kubernetes.io/lifecycle" = coalesce(
                   lookup(node_pool, "spot_instance", null),
                   false
@@ -51,11 +51,24 @@ locals {
       )
       public_ip        = false
       root_volume_size = lookup(node_pool, "volume_size")
+      capacity_type = coalesce(
+        lookup(node_pool, "spot_instance", null),
+        false
+      ) ? "SPOT" : null,
       spot_price = coalesce(
         lookup(node_pool, "spot_instance", null),
         false
+      ) ? data.aws_ec2_spot_price.current[lookup(node_pool, "name")].spot_price : ""
+      spot_max_price = coalesce(
+        lookup(node_pool, "spot_instance", null),
+        false
       ) ? data.aws_ec2_spot_price.current[lookup(node_pool, "name")].spot_price * 2 : ""
-      subnets = coalesce(lookup(node_pool, "subnets", null), var.subnets)
+      market_type = coalesce(
+        lookup(node_pool, "spot_instance", null),
+        false
+      ) ? "spot" : null,
+      update_default_version = true
+      subnets                = coalesce(lookup(node_pool, "subnets", null), var.subnets)
 
       tags = [
         for key, value in merge(

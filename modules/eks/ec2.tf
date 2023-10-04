@@ -77,7 +77,7 @@ locals {
   additional_firewall_rules_cidr_blocks = flatten([
     for nodePool in var.node_pools :
     [
-      for rule in coalesce(lookup(local.additional_firewall_rules, "cidr_blocks", null), []) : {
+      for rule in coalesce(lookup(lookup(local.additional_firewall_rules, nodePool.name, {}), "cidr_blocks", null), []) : {
         description       = lookup(rule, "description")
         security_group_id = aws_security_group.node_pool[nodePool["name"]].id
         type              = lookup(rule, "type")
@@ -91,7 +91,7 @@ locals {
   additional_firewall_rules_source_security_group_id = flatten([
     for nodePool in var.node_pools :
     [
-      for rule in coalesce(lookup(local.additional_firewall_rules, "source_security_group_id", null), []) : {
+      for rule in coalesce(lookup(lookup(local.additional_firewall_rules, nodePool.name, {}), "source_security_group_id", null), []) : {
         description              = lookup(rule, "description")
         security_group_id        = aws_security_group.node_pool[nodePool["name"]].id
         type                     = lookup(rule, "type")
@@ -105,8 +105,8 @@ locals {
   additional_firewall_rules_self = flatten([
     for nodePool in var.node_pools :
     [
-      for rule in coalesce(lookup(local.additional_firewall_rules, "self", null), []) : {
-        description       = lookup(rule, "description")
+      for rule in coalesce(lookup(lookup(local.additional_firewall_rules, nodePool.name, {}), "self", null), []) : {
+      description       = lookup(rule, "description")
         security_group_id = aws_security_group.node_pool[nodePool["name"]].id
         type              = lookup(rule, "type")
         from_port         = lookup(rule, "from_port")

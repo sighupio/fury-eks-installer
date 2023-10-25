@@ -40,3 +40,7 @@ terraform.rc
 
 # Tools
 .envrc
+
+# Examples outputs
+examples/vpn/secrets/
+examples/vpn/ssh-users.yml

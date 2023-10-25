@@ -85,7 +85,7 @@ resource "aws_s3_bucket" "furyagent" {
 resource "aws_s3_bucket_ownership_controls" "furyagent" {
   bucket = aws_s3_bucket.furyagent.id
   rule {
-    object_ownership = "BucketOwnerEnforced"
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 

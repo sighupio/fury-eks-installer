@@ -19,6 +19,8 @@ terraform apply
 
 # Bring up the vpn, but only if you plan to spin a private cluster
 cd examples/vpn
+cp main.auto.tfvars.dist main.auto.tfvars
+# TASK: fill in main.auto.tfvars with your data
 terraform init
 terraform apply
 

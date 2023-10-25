@@ -9,7 +9,7 @@
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.3  |
-| aws | ~> 3.76 |
+| aws | ~> 5.22 |
 | external | ~> 2.3  |
 | local | ~> 2.4  |
 | null | ~> 3.2  |
@@ -18,7 +18,7 @@
 
 | Name | Version |
 |------|---------|
-| aws | ~> 3.76 |
+| aws | ~> 5.22 |
 
 ## Inputs
 
@@ -62,7 +62,7 @@ terraform {
   required_providers {
     local    = "~> 2.4.0"
     null     = "~> 3.2.1"
-    aws      = "~> 3.76.1"
+    aws      = "~> 5.22.0"
     external = "~> 2.3.1"
   }
 }

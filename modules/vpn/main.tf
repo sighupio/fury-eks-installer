@@ -8,7 +8,7 @@ terraform {
   }
 }
 
-//INSTANCE RELATED STUFF
+// INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
   vpc_id      = data.aws_vpc.this.id
@@ -89,13 +89,6 @@ resource "aws_s3_bucket_ownership_controls" "furyagent" {
   }
 }
 
-resource "aws_s3_bucket_acl" "furyagent" {
-  depends_on = [aws_s3_bucket_ownership_controls.furyagent]
-
-  bucket = aws_s3_bucket.furyagent.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_versioning" "furyagent" {
   bucket = aws_s3_bucket.furyagent.id
   versioning_configuration {
@@ -158,7 +151,7 @@ resource "aws_iam_policy" "furyagent" {
 EOF
 }
 
-//FURYAGENT
+// FURYAGENT
 
 resource "local_file" "furyagent" {
   content  = local.furyagent

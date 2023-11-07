@@ -4,6 +4,7 @@ locals {
     "k8s.io/cluster-autoscaler/enabled" : "true"
   }
 
+  # Self-managed node groups
   worker_groups = [
     for node_pool in var.node_pools :
     {
@@ -77,13 +78,65 @@ locals {
             var.tags
           ),
           coalesce(lookup(node_pool, "tags", null), {})
-          ) : {
+        ) : {
           key                 = key
           value               = value
           propagate_at_launch = true
-      }]
+        }
+      ]
       target_group_arns = lookup(node_pool, "target_group_arns", null)
-    }
+    } if lookup(node_pool, "type") == "self-managed" || lookup(node_pool, "type") == null
+  ]
+
+  # EKS-managed node groups
+  node_groups = [
+    for node_pool in var.node_pools :
+    {
+      name               = lookup(node_pool, "name")
+      ami_id             = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      desired_capacity   = lookup(node_pool, "min_size")
+      max_capacity       = lookup(node_pool, "max_size")
+      min_capacity       = lookup(node_pool, "min_size")
+      instance_types     = [lookup(node_pool, "instance_type")]
+      key_name           = aws_key_pair.nodes.key_name
+      kubelet_extra_args = format(
+        "--node-labels %s%s%s",
+        join(",",
+          [
+            for k, v in merge(
+              {
+                "sighup.io/cluster"   = var.cluster_name
+                "sighup.io/node_pool" = lookup(node_pool, "name")
+                "node.kubernetes.io/lifecycle" = coalesce(
+                  lookup(node_pool, "spot_instance", null),
+                  false
+                ) ? "spot" : ""
+              },
+              lookup(node_pool, "labels", null) != null ? node_pool["labels"] : {}
+            ) : "${k}=${v}"
+          ]
+        ),
+        length(
+          lookup(
+            node_pool, "taints", null
+          ) != null ? node_pool["taints"] : []
+        ) > 0 ? " --register-with-taints ${join(",", lookup(node_pool, "taints"))}" : "",
+        lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : "",
+      )
+      public_ip = false
+      capacity_type = coalesce(
+        lookup(node_pool, "spot_instance", null),
+        false
+      ) ? "SPOT" : null,
+      update_default_version = true
+      subnets                = coalesce(lookup(node_pool, "subnets", null), var.subnets)
+
+      additional_tags = merge(
+        var.tags,
+        { Name: "${var.cluster_name}-${lookup(node_pool, "name")}" }
+      )
+
+    } if lookup(node_pool, "type") == "eks-managed"
   ]
 }
 
@@ -119,10 +172,18 @@ module "cluster" {
   subnets                              = var.subnets
   tags                                 = var.tags
   vpc_id                               = var.vpc_id
-  worker_additional_security_group_ids = [aws_security_group.node_pool_shared.id]
+
+  # self-managed node groups
   worker_groups                        = var.node_pools_launch_kind == "launch_configurations" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
   worker_groups_launch_template        = var.node_pools_launch_kind == "launch_templates" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
+  workers_group_defaults = {}
+  worker_additional_security_group_ids = [aws_security_group.node_pool_shared.id]
   worker_sg_ingress_from_port          = 22
+
+  # eks-managed node groups
+  node_groups          = local.node_groups
+  node_groups_defaults = {}
+
   write_kubeconfig                     = false
 }
 

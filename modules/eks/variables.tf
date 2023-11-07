@@ -39,6 +39,7 @@ variable "ssh_public_key" {
 variable "node_pools" {
   description = "An object list defining node pools configurations"
   type = list(object({
+    type              = optional(string, "self-managed") # "eks-managed" or "self-managed"
     name              = string
     ami_id            = optional(string)
     version           = optional(string, null) # null to use cluster_version
@@ -48,7 +49,7 @@ variable "node_pools" {
     container_runtime = optional(string, "containerd")
     spot_instance     = optional(bool, false)
     max_pods          = optional(number, null) # null to use default upstream configuration
-    volume_size       = number
+    volume_size       = optional(number, 100)
     subnets           = optional(list(string), null) # null to use default upstream configuration
     labels            = optional(map(string))
     taints            = optional(list(string))
@@ -110,6 +111,18 @@ variable "node_pools_launch_kind" {
     condition     = length(regexall("^(launch_templates|launch_configurations|both)$", var.node_pools_launch_kind)) > 0
     error_message = "ERROR: Valid values are \"launch_templates\", \"launch_configurations\" and \"both\"!"
   }
+}
+
+variable "node_groups_defaults" {
+  description = "Map of values to be applied to all node groups. See `node_groups` module's documentation for more details"
+  type        = any
+  default     = {}
+}
+
+variable "node_groups" {
+  description = "Map of map of node groups to create. See `node_groups` module's documentation for more details"
+  type        = any
+  default     = {}
 }
 
 variable "tags" {

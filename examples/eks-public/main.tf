@@ -63,7 +63,7 @@ module "fury_public_example" {
 
   node_pools = [
     {
-      name : "m5-node-pool"
+      name : "m5-node-pool-self-managed"
       version : null # To use same value as cluster_version
       min_size : 1
       max_size : 2
@@ -99,7 +99,7 @@ module "fury_public_example" {
       # max_pods : null # To use default EKS setting set it to null or do not set it
     },
     {
-      name : "m5-node-pool-spot"
+      name : "m5-node-pool-spot-self-managed"
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
@@ -133,14 +133,14 @@ module "fury_public_example" {
       max_pods : 35
     },
     {
-      name : "m5-node-pool-min-config"
+      name : "m5-node-pool-min-config-self-managed"
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
       volume_size : 10
     },
     {
-      name : "m5-node-pool-null-config"
+      name : "m5-node-pool-null-config-self-managed"
       ami_id : null
       version : null
       min_size : 1
@@ -156,6 +156,22 @@ module "fury_public_example" {
       tags : null
       additional_firewall_rules : null
     },
+    {
+      type : "eks-managed"
+      name : "m5-node-pool-eks-managed"
+      min_size : 1
+      max_size : 2
+      instance_type : "m5.large"
+      subnets : null
+      labels : {
+        "node.kubernetes.io/role" : "app"
+        "sighup.io/fury-release" : "v1.25.0"
+      }
+      taints : []
+      tags : {
+        "node-tags" : "exists"
+      }
+    }
   ]
 
   tags = {

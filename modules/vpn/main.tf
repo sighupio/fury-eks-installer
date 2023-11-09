@@ -3,12 +3,12 @@ terraform {
   required_providers {
     local    = "~> 2.4"
     null     = "~> 3.2"
-    aws      = "~> 3.76"
+    aws      = "~> 5.22"
     external = "~> 2.3"
   }
 }
 
-//INSTANCE RELATED STUFF
+// INSTANCE RELATED STUFF
 
 resource "aws_security_group" "vpn" {
   vpc_id      = data.aws_vpc.this.id
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "vpn_egress" {
 resource "aws_eip" "vpn" {
   count = var.vpn_instances
 
-  vpc  = true
+  domain  = "vpc"
   tags = var.tags
 }
 
@@ -76,23 +76,34 @@ resource "aws_eip_association" "vpn" {
 // BUCKET AND IAM
 resource "aws_s3_bucket" "furyagent" {
   bucket_prefix = coalesce(var.vpn_bucket_name_prefix, "${var.name}-vpn-bucket-")
-  acl           = "private"
 
   force_destroy = true
 
-  versioning {
-    enabled = true
-  }
+  tags = var.tags
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_ownership_controls" "furyagent" {
+  bucket = aws_s3_bucket.furyagent.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "furyagent" {
+  bucket = aws_s3_bucket.furyagent.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "furyagent" {
+  bucket = aws_s3_bucket.furyagent.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
     }
   }
-
-  tags = var.tags
 }
 
 resource "aws_iam_user" "furyagent" {
@@ -140,7 +151,7 @@ resource "aws_iam_policy" "furyagent" {
 EOF
 }
 
-//FURYAGENT
+// FURYAGENT
 
 resource "local_file" "furyagent" {
   content  = local.furyagent

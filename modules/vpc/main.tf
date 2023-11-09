@@ -3,7 +3,7 @@ terraform {
   required_providers {
     local    = "~> 2.4"
     null     = "~> 3.2"
-    aws      = "~> 3.76"
+    aws      = "~> 5.22"
     external = "~> 2.3"
   }
 }
@@ -16,13 +16,14 @@ locals {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.19.0"
+  version = "5.1.2"
 
   name = var.name
   cidr = var.cidr
 
   azs = local.aws_availability_zone_names
 
+  map_public_ip_on_launch = true
   private_subnets = var.private_subnetwork_cidrs
   public_subnets  = var.public_subnetwork_cidrs
 

@@ -14,11 +14,10 @@ export AWS_REGION=<YOUR_REGION>
 
 # Bring up the vpc
 cd examples/vpc
-
 terraform init
 terraform apply
 
-# Bring up the vpn
+# Bring up the vpn, but only if you plan to spin a private cluster
 cd examples/vpn
 cp main.auto.tfvars.dist main.auto.tfvars
 # TASK: fill in main.auto.tfvars with your data
@@ -29,9 +28,8 @@ terraform apply
 furyagent configure openvpn-client --config=./secrets/furyagent.yml --client-name test > /tmp/fury-example-test.ovpn
 # TASK: import the generated /tmp/fury-example-test.ovpn in the openvpn client of your choice and turn it on.
 
+# Create a kubernetes cluster. Pick eks-private if you plan to spin a private cluster, or eks-public otherwise.
 cd ../eks-private
-cp main.auto.tfvars.dist main.auto.tfvars
-# TASK: fill in main.auto.tfvars with your data
 terraform init
 terraform apply
 
@@ -40,4 +38,7 @@ terraform output -raw kubeconfig > /var/tmp/.kubeconfig
 
 # Last but not least, you can verify your cluster is up and running
 KUBECONFIG=/var/tmp/.kubeconfig kubectl get nodes
+
+# Destroy the cluster
+terraform destroy
 ```

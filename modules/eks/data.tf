@@ -13,7 +13,7 @@ data "aws_availability_zones" "available" {
   state = "available"
   filter {
     name   = "zone-id"
-    values = local.availability_zone_ids
+    values = coalesce(local.availability_zone_ids, "eu-west-1a")
   }
 }
 
@@ -36,7 +36,7 @@ data "aws_ami" "eks_worker" {
 
 data "aws_ec2_spot_price" "current" {
   for_each          = { for node_pool in var.node_pools : node_pool["name"] => node_pool["instance_type"] }
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone = length(data.aws_availability_zones.available.names) > 0 ? data.aws_availability_zones.available.names[0] : ""
   instance_type     = each.value
 
   filter {

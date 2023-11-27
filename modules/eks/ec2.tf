@@ -162,10 +162,11 @@ resource "aws_security_group" "node_pool_shared" {
 }
 
 resource "aws_security_group_rule" "ssh_to_nodes" {
+  count             = (length(coalesce(var.ssh_to_nodes_allowed_cidr_blocks, [])) > 0 && length(coalesce(var.cluster_endpoint_private_access_cidrs, [])) > 0) ? 1 : 0
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = coalescelist(var.ssh_to_nodes_allowed_cidr_blocks , var.cluster_endpoint_private_access_cidrs)
+  cidr_blocks       = coalescelist(coalesce(var.ssh_to_nodes_allowed_cidr_blocks, []), coalesce(var.cluster_endpoint_private_access_cidrs, []))
   security_group_id = aws_security_group.node_pool_shared.id
 }

@@ -123,7 +123,6 @@ module "fury_private_example" {
   cluster_version            = "1.25"
   cluster_log_retention_days = 1
 
-  availability_zone_names = ["eu-west-1a", "eu-west-1b"]
   subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
   vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
 
@@ -291,7 +290,6 @@ module "fury_public_example" {
   cluster_version            = "1.25"
   cluster_log_retention_days = 1
 
-  availability_zone_names = ["eu-west-1a", "eu-west-1b"]
   subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
   vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
 

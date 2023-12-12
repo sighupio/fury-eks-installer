@@ -200,12 +200,6 @@ variable "cluster_service_ipv4_cidr" {
 
 # Other variables
 
-variable "availability_zone_names" {
-  description = "A list of availability zones names in the region"
-  type        = list(string)
-  default     = []
-}
-
 variable "ssh_to_nodes_allowed_cidr_blocks" {
   description = "List of CIDR blocks which can access via SSH the Amazon EKS nodes"
   type        = list(string)

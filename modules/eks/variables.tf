@@ -205,3 +205,15 @@ variable "ssh_to_nodes_allowed_cidr_blocks" {
   type        = list(string)
   default     = null
 }
+variable "cluster_enabled_log_types" {
+  description = "List of log types that will be enabled for the EKS cluster. Can be a subset of ['api', 'audit', 'authenticator', 'controllerManager', 'scheduler'] or an empty list."
+  type        = list(string)
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  nullable = false
+  validation {
+    condition     = length(var.cluster_enabled_log_types) == 0 || alltrue([for val in var.cluster_enabled_log_types : contains(["api", "audit", "authenticator", "controllerManager", "scheduler"], val)])
+    error_message = "The log type must be one of the following: api, audit, authenticator, controllerManager, scheduler, or the list must be empty."
+  }
+
+}

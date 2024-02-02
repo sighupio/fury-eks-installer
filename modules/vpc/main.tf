@@ -24,8 +24,8 @@ module "vpc" {
   azs = local.aws_availability_zone_names
 
   map_public_ip_on_launch = true
-  private_subnets = var.private_subnetwork_cidrs
-  public_subnets  = var.public_subnetwork_cidrs
+  private_subnets         = var.private_subnetwork_cidrs
+  public_subnets          = var.public_subnetwork_cidrs
 
   enable_nat_gateway     = true
   single_nat_gateway     = var.single_nat_gateway

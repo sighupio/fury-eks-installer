@@ -1,6 +1,6 @@
 output "cluster_id" {
   description = "The EKS cluster ID"
-  value = module.cluster.cluster_id
+  value       = module.cluster.cluster_id
 }
 
 output "cluster_endpoint" {
@@ -40,7 +40,7 @@ output "eks_workers_asg_names" {
 
 output "eks_cluster_primary_security_group_id" {
   description = "The cluster primary security group ID created by the EKS cluster on 1.14 or later. Referred to as 'Cluster security group' in the EKS console."
-  value = module.cluster.cluster_primary_security_group_id
+  value       = module.cluster.cluster_primary_security_group_id
 }
 
 output "eks_worker_security_group_id" {

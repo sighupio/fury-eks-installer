@@ -46,8 +46,8 @@ resource "aws_security_group_rule" "vpn_egress" {
 resource "aws_eip" "vpn" {
   count = var.vpn_instances
 
-  domain  = "vpc"
-  tags = var.tags
+  domain = "vpc"
+  tags   = var.tags
 }
 
 resource "aws_instance" "vpn" {
@@ -101,7 +101,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "furyagent" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }

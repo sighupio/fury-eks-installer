@@ -178,7 +178,8 @@ module "fury_public_example" {
     Environment : "kfd-development"
   }
 
-  eks_map_users    = []
-  eks_map_roles    = []
-  eks_map_accounts = []
+  eks_map_users             = []
+  eks_map_roles             = []
+  eks_map_accounts          = []
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }

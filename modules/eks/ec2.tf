@@ -106,7 +106,7 @@ locals {
     for nodePool in var.node_pools :
     [
       for rule in coalesce(lookup(lookup(local.additional_firewall_rules, nodePool.name, {}), "self", null), []) : {
-      description       = lookup(rule, "description")
+        description       = lookup(rule, "description")
         security_group_id = aws_security_group.node_pool[nodePool["name"]].id
         type              = lookup(rule, "type")
         from_port         = lookup(rule, "from_port")

@@ -78,7 +78,7 @@ locals {
             var.tags
           ),
           coalesce(lookup(node_pool, "tags", null), {})
-        ) : {
+          ) : {
           key                 = key
           value               = value
           propagate_at_launch = true
@@ -92,13 +92,13 @@ locals {
   node_groups = [
     for node_pool in var.node_pools :
     {
-      name               = lookup(node_pool, "name")
-      ami_id             = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
-      desired_capacity   = lookup(node_pool, "min_size")
-      max_capacity       = lookup(node_pool, "max_size")
-      min_capacity       = lookup(node_pool, "min_size")
-      instance_types     = [lookup(node_pool, "instance_type")]
-      key_name           = aws_key_pair.nodes.key_name
+      name             = lookup(node_pool, "name")
+      ami_id           = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      desired_capacity = lookup(node_pool, "min_size")
+      max_capacity     = lookup(node_pool, "max_size")
+      min_capacity     = lookup(node_pool, "min_size")
+      instance_types   = [lookup(node_pool, "instance_type")]
+      key_name         = aws_key_pair.nodes.key_name
       kubelet_extra_args = format(
         "--node-labels %s%s%s",
         join(",",
@@ -133,7 +133,7 @@ locals {
 
       additional_tags = merge(
         var.tags,
-        { Name: "${var.cluster_name}-${lookup(node_pool, "name")}" }
+        { Name : "${var.cluster_name}-${lookup(node_pool, "name")}" }
       )
 
     } if lookup(node_pool, "type") == "eks-managed"
@@ -157,7 +157,7 @@ module "cluster" {
   cluster_service_ipv4_cidr = var.cluster_service_ipv4_cidr
 
   cluster_log_retention_in_days = var.cluster_log_retention_days
-  cluster_enabled_log_types     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  cluster_enabled_log_types     = var.cluster_enabled_log_types
   cluster_name                  = var.cluster_name
   cluster_version               = var.cluster_version
   create_eks                    = true
@@ -168,15 +168,15 @@ module "cluster" {
   map_roles    = var.eks_map_roles
   map_users    = var.eks_map_users
 
-  kubeconfig_name                      = var.cluster_name
-  subnets                              = var.subnets
-  tags                                 = var.tags
-  vpc_id                               = var.vpc_id
+  kubeconfig_name = var.cluster_name
+  subnets         = var.subnets
+  tags            = var.tags
+  vpc_id          = var.vpc_id
 
   # self-managed node groups
   worker_groups                        = var.node_pools_launch_kind == "launch_configurations" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
   worker_groups_launch_template        = var.node_pools_launch_kind == "launch_templates" || var.node_pools_launch_kind == "both" ? local.worker_groups : []
-  workers_group_defaults = {}
+  workers_group_defaults               = {}
   worker_additional_security_group_ids = [aws_security_group.node_pool_shared.id]
   worker_sg_ingress_from_port          = 22
 
@@ -184,7 +184,7 @@ module "cluster" {
   node_groups          = local.node_groups
   node_groups_defaults = {}
 
-  write_kubeconfig                     = false
+  write_kubeconfig = false
 }
 
 resource "aws_iam_role_policy_attachment" "workers_AmazonSSMManagedInstanceCore" {

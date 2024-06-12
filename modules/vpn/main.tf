@@ -12,7 +12,7 @@ terraform {
 
 resource "aws_security_group" "vpn" {
   vpc_id      = data.aws_vpc.this.id
-  name_prefix = "${var.name}-"
+  name_prefix = "${coalesce(var.vpn_iam_name_override, "${var.name}")}-"
   tags        = var.tags
 }
 
@@ -107,7 +107,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "furyagent" {
 }
 
 resource "aws_iam_user" "furyagent" {
-  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  name = coalesce(var.vpn_iam_name_override, "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn")
   path = "/"
 
   tags = var.tags
@@ -118,13 +118,13 @@ resource "aws_iam_access_key" "furyagent" {
 }
 
 resource "aws_iam_policy_attachment" "furyagent" {
-  name       = "${var.name}-vpn"
+  name       = coalesce(var.vpn_iam_name_override, "${var.name}-vpn")
   users      = [aws_iam_user.furyagent.name]
   policy_arn = aws_iam_policy.furyagent.arn
 }
 
 resource "aws_iam_policy" "furyagent" {
-  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  name = coalesce(var.vpn_iam_name_override, "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn")
   path = "/"
 
   policy = <<EOF

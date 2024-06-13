@@ -163,6 +163,7 @@ module "cluster" {
   create_eks                    = true
   enable_irsa                   = true
   iam_path                      = "/${var.cluster_name}/"
+  cluster_iam_role_name         = var.cluster_iam_role_name
 
   map_accounts = var.eks_map_accounts
   map_roles    = var.eks_map_roles

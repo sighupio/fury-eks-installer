@@ -180,6 +180,7 @@ module "cluster" {
   workers_group_defaults               = {}
   worker_additional_security_group_ids = [aws_security_group.node_pool_shared.id]
   worker_sg_ingress_from_port          = 22
+  workers_role_name                    = var.workers_role_name
 
   # eks-managed node groups
   node_groups          = local.node_groups

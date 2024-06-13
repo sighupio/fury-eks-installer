@@ -223,3 +223,9 @@ variable "cluster_iam_role_name" {
   type        = string
   default     = ""
 }
+
+variable "workers_role_name" {
+  description = "IAM role name for the EKS workers"
+  type        = string
+  default     = ""
+}

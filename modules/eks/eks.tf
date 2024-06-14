@@ -52,6 +52,7 @@ locals {
       )
       public_ip        = false
       root_volume_size = lookup(node_pool, "volume_size")
+      root_volume_type = lookup(node_pool, "volume_type", "gp2")
       capacity_type = coalesce(
         lookup(node_pool, "spot_instance", null),
         false

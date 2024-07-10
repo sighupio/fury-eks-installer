@@ -40,6 +40,7 @@ EOT
       asg_min_size                  = lookup(node_pool, "min_size")
       instance_type                 = lookup(node_pool, "instance_type")
       root_volume_size              = lookup(node_pool, "volume_size")
+      root_volume_type              = lookup(node_pool, "volume_type", "gp2")
       target_group_arns             = lookup(node_pool, "eks_target_group_arns")
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false

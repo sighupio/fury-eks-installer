@@ -20,6 +20,7 @@ locals {
       "instance_type" : worker.instance_type,
       "tags" : [for tag_key, tag_value in merge(merge(local.default_node_tags, var.tags), worker.tags) : { "key" : tag_key, "value" : tag_value, "propagate_at_launch" : true }],
       "volume_size" : worker.volume_size,
+      "volume_type" : worker.volume_type != null ? worker.volume_type : "gp2",
       "subnetworks" : worker.subnetworks != null ? worker.subnetworks : var.subnetworks
       "eks_target_group_arns" : worker.eks_target_group_arns
       "bootstrap_extra_args" : "%{if lookup(worker, "max_pods", null) != null}--use-max-pods false%{endif} %{if lookup(worker, "container_runtime", null) == "containerd"}--container-runtime containerd %{endif}",
@@ -40,6 +41,7 @@ EOT
       asg_min_size                  = lookup(node_pool, "min_size")
       instance_type                 = lookup(node_pool, "instance_type")
       root_volume_size              = lookup(node_pool, "volume_size")
+      root_volume_type              = lookup(node_pool, "volume_type")
       target_group_arns             = lookup(node_pool, "eks_target_group_arns")
       key_name                      = aws_key_pair.nodes.key_name
       public_ip                     = false

@@ -217,3 +217,15 @@ variable "cluster_enabled_log_types" {
   }
 
 }
+
+variable "cluster_iam_role_name" {
+  description = "IAM role name for the EKS cluster"
+  type        = string
+  default     = ""
+}
+
+variable "workers_role_name" {
+  description = "IAM role name for the EKS workers"
+  type        = string
+  default     = ""
+}

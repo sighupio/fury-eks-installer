@@ -107,7 +107,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "furyagent" {
 }
 
 resource "aws_iam_user" "furyagent" {
-  name = "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn"
+  name = coalesce(var.vpn_iam_user_name_override, "${var.name}-${var.vpc_id}-${data.aws_region.current.name}-vpn")
   path = "/"
 
   tags = var.tags

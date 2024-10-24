@@ -5,7 +5,7 @@
  */
 
 terraform {
-  required_version = "1.4.6"
+  required_version = "~> 1.4.6"
   required_providers {
     local    = "~> 2.4.0"
     null     = "~> 3.2.1"
@@ -37,7 +37,6 @@ data "terraform_remote_state" "vpc" {
   backend = "local"
   config = {
     path = "${path.root}/../vpc/terraform.tfstate"
-    # path = "/Users/smerlos/work/github.com/sighupio/fury-eks-installer/examples/eks-public/terraform.tfstate"
   }
 }
 
@@ -48,7 +47,7 @@ resource "tls_private_key" "ssh" {
 
 module "fury_public_example" {
   source = "../../modules/eks"
-  # global_ami_type = "Amazon Linux 2023"
+  # global_eks_nodepool_default_ami_type = "Amazon Linux 2023"
   cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
   cluster_version            = "1.29"
   cluster_log_retention_days = 1

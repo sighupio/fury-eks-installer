@@ -237,7 +237,7 @@ variable "global_eks_nodepool_default_ami_type" {
   description = "Global default AMI type used for EKS worker nodes. This will apply to all node pools unless overridden by a specific node pool."
   default     = "alinux2"
   validation {
-    condition     = contains(["alinux2", "alinux2023", "alinux2_gpu", "alinux2023_nvidia", "alinux2023_neuron", "alinux2023_arm64", "alinux2_arm64"], var.global_eks_nodepool_default_ami_type)
-    error_message = "The global AMI type must be one of the following: alinux2, alinux2023, alinux2_gpu, alinux2023_nvidia, alinux2023_neuron, alinux2023_arm64, alinux2_arm64."
+    condition     = contains(["alinux2", "alinux2023"], var.global_eks_nodepool_default_ami_type)
+    error_message = "The global AMI type must be either 'alinux2' or 'alinux2023'."
   }
 }

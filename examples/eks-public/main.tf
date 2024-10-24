@@ -5,7 +5,7 @@
  */
 
 terraform {
-  required_version = "~> 1.4.6"
+  required_version = "1.4.6"
   required_providers {
     local    = "~> 2.4.0"
     null     = "~> 3.2.1"
@@ -36,7 +36,8 @@ data "aws_eks_cluster_auth" "fury_public_example" {
 data "terraform_remote_state" "vpc" {
   backend = "local"
   config = {
-    path = "${path.module}/../vpc/terraform.tfstate"
+    path = "${path.root}/../vpc/terraform.tfstate"
+    # path = "/Users/smerlos/work/github.com/sighupio/fury-eks-installer/examples/eks-public/terraform.tfstate"
   }
 }
 
@@ -47,14 +48,14 @@ resource "tls_private_key" "ssh" {
 
 module "fury_public_example" {
   source = "../../modules/eks"
-
+  # global_ami_type = "Amazon Linux 2023"
   cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
-  cluster_version            = "1.25"
+  cluster_version            = "1.29"
   cluster_log_retention_days = 1
 
-  availability_zone_names = ["eu-west-1a", "eu-west-1b"]
-  subnets                 = data.terraform_remote_state.vpc.outputs.private_subnets
-  vpc_id                  = data.terraform_remote_state.vpc.outputs.vpc_id
+  # availability_zone_names = ["eu-west-1a", "eu-west-1b"]
+  subnets = data.terraform_remote_state.vpc.outputs.private_subnets
+  vpc_id  = data.terraform_remote_state.vpc.outputs.vpc_id
 
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = false
@@ -137,7 +138,7 @@ module "fury_public_example" {
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
-      volume_size : 10
+      volume_size : 20
     },
     {
       name : "m5-node-pool-null-config-self-managed"

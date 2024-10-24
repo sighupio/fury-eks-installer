@@ -26,12 +26,11 @@ data "aws_ami" "eks_worker" {
 
   filter {
     name   = "name"
-    values = ["amazon-eks-node-${each.value != null ? each.value : var.cluster_version}-v*"]
+    values = ["${local.node_pool_ami_prefix[each.key]}-${each.value != null ? each.value : var.cluster_version}-v*"]
   }
 
   most_recent = true
-
-  owners = ["amazon"]
+  owners      = ["amazon"]
 }
 
 data "aws_ec2_spot_price" "current" {

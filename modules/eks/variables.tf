@@ -39,23 +39,24 @@ variable "ssh_public_key" {
 variable "node_pools" {
   description = "An object list defining node pools configurations"
   type = list(object({
-    type              = optional(string, "self-managed") # "eks-managed" or "self-managed"
-    name              = string
-    ami_id            = optional(string)
-    version           = optional(string, null) # null to use cluster_version
-    min_size          = number
-    max_size          = number
-    instance_type     = string
-    container_runtime = optional(string, "containerd")
-    spot_instance     = optional(bool, false)
-    max_pods          = optional(number, null) # null to use default upstream configuration
-    volume_size       = optional(number, 100)
-    volume_type       = optional(string, "gp2")
-    subnets           = optional(list(string), null) # null to use default upstream configuration
-    labels            = optional(map(string))
-    taints            = optional(list(string))
-    tags              = optional(map(string))
-    target_group_arns = optional(list(string))
+    type               = optional(string, "self-managed") # "eks-managed" or "self-managed"
+    name               = string
+    ami_id             = optional(string)
+    node_pool_ami_type = optional(string, null)
+    version            = optional(string, null) # null to use cluster_version
+    min_size           = number
+    max_size           = number
+    instance_type      = string
+    container_runtime  = optional(string, "containerd")
+    spot_instance      = optional(bool, false)
+    max_pods           = optional(number, null) # null to use default upstream configuration
+    volume_size        = optional(number, 100)
+    volume_type        = optional(string, "gp2")
+    subnets            = optional(list(string), null) # null to use default upstream configuration
+    labels             = optional(map(string))
+    taints             = optional(list(string))
+    tags               = optional(map(string))
+    target_group_arns  = optional(list(string))
     additional_firewall_rules = optional(
       object({
         cidr_blocks = optional(
@@ -229,4 +230,14 @@ variable "workers_role_name" {
   description = "IAM role name for the EKS workers"
   type        = string
   default     = ""
+}
+
+variable "global_ami_type" {
+  type        = string
+  description = "Global default AMI type used for EKS worker nodes. This will apply to all node pools unless overridden by a specific node pool."
+  default     = "alinux2"
+  validation {
+    condition     = contains(["alinux2", "alinux2023"], var.global_ami_type)
+    error_message = "The global AMI type must be either 'alinux2' or 'alinux2023'."
+  }
 }

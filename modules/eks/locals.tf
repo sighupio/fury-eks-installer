@@ -10,7 +10,7 @@ locals {
   node_pool_ami_prefix = {
     for node_pool in var.node_pools :
     node_pool.name => (
-      lookup(local.ami_type_prefix_map, coalesce(node_pool.ami_type, var.node_pools_global_ami_type), local.ami_type_prefix_map[var.node_pools_global_ami_type])
+      lookup(local.ami_type_prefix_map, coalesce(node_pool.ami_type, var.node_pools_global_ami_type))
     )
   }
 }

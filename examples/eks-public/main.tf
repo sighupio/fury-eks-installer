@@ -47,7 +47,7 @@ resource "tls_private_key" "ssh" {
 
 module "fury_public_example" {
   source = "../../modules/eks"
-  # global_eks_nodepool_default_ami_type = "Amazon Linux 2023"
+
   cluster_name               = var.cluster_name # make sure to use the same name you used in the VPC and VPN module
   cluster_version            = "1.29"
   cluster_log_retention_days = 1

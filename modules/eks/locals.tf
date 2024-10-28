@@ -2,7 +2,7 @@ locals {
   availability_zone_ids = toset([for subnet in data.aws_subnet.this : subnet.availability_zone_id])
   # Mapping from user-friendly AMI type names to actual AMI prefixes
   ami_type_prefix_map = {
-    "alinux2"    = "amazon-eks-node"
+    "alinux2"    = "amazon-eks-*node"
     "alinux2023" = "amazon-eks-node-al2023-*-standard"
   }
 

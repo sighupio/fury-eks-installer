@@ -42,7 +42,7 @@ variable "node_pools" {
     type              = optional(string, "self-managed") # "eks-managed" or "self-managed"
     name              = string
     ami_id            = optional(string)
-    ami_type  = optional(string, null)
+    ami_type          = optional(string, null)
     version           = optional(string, null) # null to use cluster_version
     min_size          = number
     max_size          = number

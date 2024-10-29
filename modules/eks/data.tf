@@ -19,6 +19,14 @@ data "aws_availability_zones" "available" {
 
 data "aws_region" "current" {}
 
+data "aws_ec2_instance_type" "eks_worker" {
+  for_each = {
+    for node_pool in var.node_pools : node_pool.name => node_pool
+  }
+
+  instance_type = each.value.instance_type
+}
+
 data "aws_ami" "eks_worker" {
   for_each = {
     for node_pool in var.node_pools : node_pool["name"] => lookup(node_pool, "version", null)
@@ -26,14 +34,17 @@ data "aws_ami" "eks_worker" {
 
   filter {
     name   = "name"
-    values = ["amazon-eks-node-${each.value != null ? each.value : var.cluster_version}-v*"]
+    values = ["${local.node_pool_ami_prefix[each.key]}-${coalesce(each.value, var.cluster_version)}-v*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = data.aws_ec2_instance_type.eks_worker[each.key].supported_architectures
   }
 
   most_recent = true
-
-  owners = ["amazon"]
+  owners      = ["amazon"]
 }
-
 data "aws_ec2_spot_price" "current" {
   for_each = { for node_pool in var.node_pools : node_pool["name"] => node_pool["instance_type"] }
   # Fallback wth eu-west-1a when no availability zones are available

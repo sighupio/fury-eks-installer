@@ -42,6 +42,7 @@ variable "node_pools" {
     type              = optional(string, "self-managed") # "eks-managed" or "self-managed"
     name              = string
     ami_id            = optional(string)
+    ami_type          = optional(string, null)
     version           = optional(string, null) # null to use cluster_version
     min_size          = number
     max_size          = number
@@ -229,4 +230,14 @@ variable "workers_role_name" {
   description = "IAM role name for the EKS workers"
   type        = string
   default     = ""
+}
+
+variable "node_pools_global_ami_type" {
+  type        = string
+  description = "Global default AMI type used for EKS worker nodes. This will apply to all node pools unless overridden by a specific node pool."
+  default     = "alinux2"
+  validation {
+    condition     = contains(["alinux2", "alinux2023"], var.node_pools_global_ami_type)
+    error_message = "The global AMI type must be either 'alinux2' or 'alinux2023'."
+  }
 }

@@ -27,14 +27,15 @@ data "aws_ec2_instance_type" "eks_worker" {
   instance_type = each.value.instance_type
 }
 
-data "aws_ami" "eks_worker" {
+# Fetch the default AMI to use for each node pool
+data "aws_ami" "eks_worker_default_ami" {
   for_each = {
-    for node_pool in var.node_pools : node_pool["name"] => lookup(node_pool, "version", null)
+    for node_pool in var.node_pools : node_pool["name"] => coalesce(node_pool.version, var.cluster_version)
   }
 
   filter {
     name   = "name"
-    values = ["${local.node_pool_ami_prefix[each.key]}-${coalesce(each.value, var.cluster_version)}-v*"]
+    values = ["${local.node_pool_ami_name_prefix[each.key]}-${each.value}-v*"]
   }
 
   filter {
@@ -45,6 +46,18 @@ data "aws_ami" "eks_worker" {
   most_recent = true
   owners      = ["amazon"]
 }
+
+# Gather data for each node pool AMI. It fetch data also in case of specified ami id/ami owner
+data "aws_ami" "eks_node_pool_from_ami_id" {
+  for_each = local.node_pool_ami
+
+  filter {
+    name   = "image-id"
+    values = [each.value.ami_id]
+  }
+  owners = each.value.owners
+}
+
 data "aws_ec2_spot_price" "current" {
   for_each = { for node_pool in var.node_pools : node_pool["name"] => node_pool["instance_type"] }
   # Fallback wth eu-west-1a when no availability zones are available

@@ -13,7 +13,7 @@ locals {
         aws_security_group.node_pool_shared.id,
         aws_security_group.node_pool[lookup(node_pool, "name")]["id"],
       ]
-      ami_id               = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      ami_id               = local.node_pool_ami[node_pool.name].ami_id
       asg_desired_capacity = lookup(node_pool, "min_size")
       asg_max_size         = lookup(node_pool, "max_size")
       asg_min_size         = lookup(node_pool, "min_size")
@@ -100,7 +100,8 @@ locals {
     for node_pool in var.node_pools :
     {
       name             = lookup(node_pool, "name")
-      ami_id           = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      ami_id           = local.node_pool_ami[node_pool.name].ami_id
+      ami_type         = local.eks_managed_node_pool_ami_type_map_by_type_and_arch["${coalesce(node_pool.ami_type, var.node_pools_global_ami_type)}-${data.aws_ami.eks_node_pool_from_ami_id[node_pool.name].architecture}"]
       desired_capacity = lookup(node_pool, "min_size")
       max_capacity     = lookup(node_pool, "max_size")
       min_capacity     = lookup(node_pool, "min_size")

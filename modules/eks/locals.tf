@@ -3,8 +3,8 @@ locals {
 
   # Mapping from user-friendly AMI type names to actual AMI prefixes
   ami_name_prefix_map_by_type = {
-    "alinux2"    = "amazon-eks-*node"
-    "alinux2023" = "amazon-eks-node-al2023-*-standard"
+    "alinux2"    = "amazon-eks(-arm64)?-node"
+    "alinux2023" = "amazon-eks-node-al2023-(arm64|x86_64)-standard"
   }
 
   # Mapping EKS Managed `ami_type` from user-friendly AMI prefixes

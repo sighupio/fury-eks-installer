@@ -23,7 +23,6 @@ data "aws_ec2_instance_type" "eks_worker" {
   for_each = {
     for node_pool in var.node_pools : node_pool.name => node_pool
   }
-
   instance_type = each.value.instance_type
 }
 
@@ -33,10 +32,7 @@ data "aws_ami" "eks_worker_default_ami" {
     for node_pool in var.node_pools : node_pool["name"] => coalesce(node_pool.version, var.cluster_version)
   }
 
-  filter {
-    name   = "name"
-    values = ["${local.node_pool_ami_name_prefix[each.key]}-${each.value}-v*"]
-  }
+  name_regex = "${local.node_pool_ami_name_prefix[each.key]}-${each.value}-v*"
 
   filter {
     name   = "architecture"
@@ -48,7 +44,7 @@ data "aws_ami" "eks_worker_default_ami" {
 }
 
 # Gather data for each node pool AMI. It fetch data also in case of specified ami id/ami owner
-data "aws_ami" "eks_node_pool_from_ami_id" {
+data "aws_ami" "eks_node_pool_ami_from_id" {
   for_each = local.node_pool_ami
 
   filter {

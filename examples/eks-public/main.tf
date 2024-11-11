@@ -5,11 +5,11 @@
  */
 
 terraform {
-  required_version = "~> 1.4.6"
+  required_version = "~> 1.4"
   required_providers {
     local    = "~> 2.4.0"
     null     = "~> 3.2.1"
-    aws      = "~> 5.22.0"
+    aws      = "~> 5.22"
     external = "~> 2.3.1"
   }
 }
@@ -140,6 +140,14 @@ module "fury_public_example" {
       volume_size : 20
     },
     {
+      name : "m5-node-pool-alinux2023-self-managed"
+      min_size : 1
+      max_size : 2
+      ami_type: "alinux2023"
+      instance_type : "m5.large"
+      volume_size : 20
+    },
+    {
       name : "m5-node-pool-null-config-self-managed"
       ami_id : null
       version : null
@@ -157,11 +165,71 @@ module "fury_public_example" {
       additional_firewall_rules : null
     },
     {
+      name : "m5-node-pool-arm64-self-managed"
+      min_size : 1
+      max_size : 2
+      instance_type : "t4g.large"
+      volume_size : 20
+    },
+    {
       type : "eks-managed"
       name : "m5-node-pool-eks-managed"
       min_size : 1
       max_size : 2
       instance_type : "m5.large"
+      subnets : null
+      labels : {
+        "node.kubernetes.io/role" : "app"
+        "sighup.io/fury-release" : "v1.25.0"
+      }
+      taints : []
+      tags : {
+        "node-tags" : "exists"
+      }
+    },
+    {
+      type : "eks-managed"
+      name : "m5-node-pool-arm64-eks-managed"
+      min_size : 1
+      max_size : 2
+      instance_type : "t4g.large"
+      spot_instance : true # optionally create spot instances
+      subnets : null
+      labels : {
+        "node.kubernetes.io/role" : "app"
+        "sighup.io/fury-release" : "v1.25.0"
+      }
+      taints : []
+      tags : {
+        "node-tags" : "exists"
+      }
+    },
+    {
+      type : "eks-managed"
+      name : "m5-node-pool-alinux2023-arm64-eks-managed"
+      min_size : 1
+      max_size : 2
+      ami_type: "alinux2023"
+      instance_type : "t4g.large"
+      spot_instance : true # optionally create spot instances
+      subnets : null
+      labels : {
+        "node.kubernetes.io/role" : "app"
+        "sighup.io/fury-release" : "v1.25.0"
+      }
+      taints : []
+      tags : {
+        "node-tags" : "exists"
+      }
+    },
+    {
+      type : "eks-managed"
+      name : "m5-node-pool-alinux2023-eks-managed"
+      min_size : 1
+      max_size : 2
+      ami_type: "alinux2023"
+      instance_type : "m5.large"
+      spot_instance : true # optionally create spot instances
       subnets : null
       labels : {
         "node.kubernetes.io/role" : "app"

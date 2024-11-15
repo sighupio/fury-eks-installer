@@ -13,7 +13,7 @@ locals {
         aws_security_group.node_pool_shared.id,
         aws_security_group.node_pool[lookup(node_pool, "name")]["id"],
       ]
-      ami_id               = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      ami_id               = data.aws_ami.eks_node_pool_ami_from_id[node_pool.name].image_id
       asg_desired_capacity = lookup(node_pool, "min_size")
       asg_max_size         = lookup(node_pool, "max_size")
       asg_min_size         = lookup(node_pool, "min_size")
@@ -89,42 +89,42 @@ locals {
     } if lookup(node_pool, "type") == "self-managed" || lookup(node_pool, "type") == null
   ]
 
+  taints_effect = {
+    NoSchedule       = "NO_SCHEDULE"
+    NoExecute        = "NO_EXECUTE"
+    PreferNoSchedule = "PREFER_NO_SCHEDULE"
+  }
+
   # EKS-managed node groups
   node_groups = [
     for node_pool in var.node_pools :
     {
       name             = lookup(node_pool, "name")
-      ami_id           = coalesce(lookup(node_pool, "ami_id", null), data.aws_ami.eks_worker[lookup(node_pool, "name")].image_id)
+      ami_id           = data.aws_ami.eks_node_pool_ami_from_id[node_pool.name].image_id
+      ami_type         = local.eks_managed_node_pool_ami_type_map_by_type_and_arch["${coalesce(node_pool.ami_type, var.node_pools_global_ami_type)}-${data.aws_ami.eks_node_pool_ami_from_id[node_pool.name].architecture}"]
       desired_capacity = lookup(node_pool, "min_size")
       max_capacity     = lookup(node_pool, "max_size")
       min_capacity     = lookup(node_pool, "min_size")
       instance_types   = [lookup(node_pool, "instance_type")]
       key_name         = aws_key_pair.nodes.key_name
-      kubelet_extra_args = format(
-        "--node-labels %s%s%s",
-        join(",",
-          [
-            for k, v in merge(
-              {
-                "sighup.io/cluster"   = var.cluster_name
-                "sighup.io/node_pool" = lookup(node_pool, "name")
-                "node.kubernetes.io/lifecycle" = coalesce(
-                  lookup(node_pool, "spot_instance", null),
-                  false
-                ) ? "spot" : ""
-              },
-              lookup(node_pool, "labels", null) != null ? node_pool["labels"] : {}
-            ) : "${k}=${v}"
-          ]
-        ),
-        length(
-          lookup(
-            node_pool, "taints", null
-          ) != null ? node_pool["taints"] : []
-        ) > 0 ? " --register-with-taints ${join(",", lookup(node_pool, "taints"))}" : "",
-        lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : "",
+      k8s_labels = merge(
+        {
+          "sighup.io/cluster"   = var.cluster_name
+          "sighup.io/node_pool" = lookup(node_pool, "name")
+          "node.kubernetes.io/lifecycle" = coalesce(
+            lookup(node_pool, "spot_instance", null),
+            false
+          ) ? "spot" : "ondemand"
+        },
+        coalesce(node_pool["labels"], {})
       )
-      public_ip = false
+      taints = [for taint in coalesce(node_pool["taints"], []) : {
+        key    = split("=", taint)[0]
+        value  = split(":", split("=", taint)[1])[0]
+        effect = local.taints_effect[(split(":", taint)[1])]
+      }]
+      kubelet_extra_args = lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : ""
+      public_ip          = false
       capacity_type = coalesce(
         lookup(node_pool, "spot_instance", null),
         false

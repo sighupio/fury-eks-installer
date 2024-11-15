@@ -100,7 +100,6 @@ locals {
     for node_pool in var.node_pools :
     {
       name             = lookup(node_pool, "name")
-      ami_id           = data.aws_ami.eks_node_pool_ami_from_id[node_pool.name].image_id
       ami_type         = local.eks_managed_node_pool_ami_type_map_by_type_and_arch["${coalesce(node_pool.ami_type, var.node_pools_global_ami_type)}-${data.aws_ami.eks_node_pool_ami_from_id[node_pool.name].architecture}"]
       desired_capacity = lookup(node_pool, "min_size")
       max_capacity     = lookup(node_pool, "max_size")
@@ -123,14 +122,11 @@ locals {
         value  = split(":", split("=", taint)[1])[0]
         effect = local.taints_effect[(split(":", taint)[1])]
       }]
-      kubelet_extra_args = lookup(node_pool, "max_pods", null) != null ? " --max-pods ${lookup(node_pool, "max_pods")}" : ""
-      public_ip          = false
       capacity_type = coalesce(
         lookup(node_pool, "spot_instance", null),
         false
-      ) ? "SPOT" : null,
-      update_default_version = true
-      subnets                = coalesce(lookup(node_pool, "subnets", null), var.subnets)
+      ) ? "SPOT" : "ON_DEMAND",
+      subnets = coalesce(lookup(node_pool, "subnets", null), var.subnets)
 
       additional_tags = merge(
         var.tags,

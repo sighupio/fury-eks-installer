@@ -132,6 +132,8 @@ locals {
         var.tags,
         { Name : "${var.cluster_name}-${lookup(node_pool, "name")}" }
       )
+      update_default_version = true
+      version = coalesce(node_pool.version, var.cluster_version)
 
     } if lookup(node_pool, "type") == "eks-managed"
   ]
